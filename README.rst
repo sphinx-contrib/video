@@ -27,9 +27,16 @@ Example::
        :height: 300
        :autoplay:
        :nocontrols:
+       :loop:
+       :muted:
+       :additionalsource: path/to/video.webm
 
-Please note that the width, height, autoplay and nocontrols parameters are all 
+Please note that the width, height, autoplay, nocontrols, loop, muted as additionalsource parameters are all 
 optional.
+
+Even though additionalsource parameter is optional, it will output a warning if it's ommitted. This is as a reminder
+that mulitple sources should be provided for maximum compatibility with browsers, since not all browsers support the 
+same video formats.
 
 Installing
 ==========
