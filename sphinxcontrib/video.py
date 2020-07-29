@@ -57,6 +57,11 @@ class Video(Directive):
 def visit_video_node(self, node):
     extension = os.path.splitext(node["path"])[1][1:]
 
+    logger = logging.getLogger(__name__)
+    if node["additionalsource"] == "": 
+        logger = logging.getLogger(__name__)
+        logger.warning('Video tag is missing additional source. This could break compatibility with some browsers.', location=node)
+
     html_block = '''
     <video {width} {height} {nocontrols} {autoplay} {muted} {loop}>
     <source src="{path}" type="video/{filetype}">
