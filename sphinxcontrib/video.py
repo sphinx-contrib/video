@@ -4,6 +4,7 @@
 import os
 from docutils import nodes
 from docutils.parsers.rst import directives, Directive
+from sphinx.util import logging
 
 def get_option(options, key, default):
     if key not in options.keys():
