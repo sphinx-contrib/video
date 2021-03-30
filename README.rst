@@ -34,6 +34,11 @@ optional.
 Installing
 ==========
 
+.. code:: shell
+
+  pip install git+https://github.com/sphinx-contrib/video.git
+  
+  
 As usual with sphinx extensions, remember to add them to your config:
 
 ::
