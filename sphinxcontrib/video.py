@@ -64,9 +64,13 @@ def visit_video_node(self, node):
         )
     self.body.append(html_block)
 
-def depart_video_node(self, node):
+def visit_depart_video_null(self, node):
     pass
 
 def setup(app):
-    app.add_node(video, html=(visit_video_node, depart_video_node))
+    app.add_node(video, html=(visit_video_node, visit_depart_video_null))
+    app.add_node(video, latex=(visit_depart_video_null, visit_depart_video_null))
+    app.add_node(video, text=(visit_depart_video_null, visit_depart_video_null))
+    app.add_node(video, man=(visit_depart_video_null, visit_depart_video_null))
+    app.add_node(video, texinfo=(visit_depart_video_null, visit_depart_video_null))
     app.add_directive("video", Video)
