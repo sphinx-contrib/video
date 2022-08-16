@@ -68,9 +68,13 @@ def visit_depart_video_null(self, node):
     pass
 
 def setup(app):
-    app.add_node(video, html=(visit_video_node, visit_depart_video_null))
-    app.add_node(video, latex=(visit_depart_video_null, visit_depart_video_null))
-    app.add_node(video, text=(visit_depart_video_null, visit_depart_video_null))
-    app.add_node(video, man=(visit_depart_video_null, visit_depart_video_null))
-    app.add_node(video, texinfo=(visit_depart_video_null, visit_depart_video_null))
+    ignore_node = (visit_depart_video_null, visit_depart_video_null)
+    app.add_node(
+        video,
+        html=(visit_video_node, visit_depart_video_null),
+        latex=ignore_node,
+        text=ignore_node,
+        man=ignore_node,
+        texifo=ignore_node,
+    )
     app.add_directive("video", Video)
