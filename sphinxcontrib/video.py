@@ -78,3 +78,7 @@ def setup(app):
         texifo=ignore_node,
     )
     app.add_directive("video", Video)
+    return {
+        'parallel_read_safe': True,
+        'parallel_write_safe': True,
+    }
