@@ -41,7 +41,7 @@ repository = "https://github.com/sphinx-contrib/video"
 [project.optional-dependencies]
 dev = ["nox", "pre-commit"]
 test = ["pytest"]
-doc = ["Sphinx"]
+doc = ["Sphinx", "pydata-sphinx-theme==0.13.0rc3","sphinx-design"]
 
 [tool.setuptools]
 include-package-data = false

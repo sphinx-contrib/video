@@ -1,4 +1,3 @@
-===================
 sphinxcontrib-video
 ===================
 
@@ -14,49 +13,20 @@ sphinxcontrib-video
    :target: https://github.com/prettier/prettier
    :alt: prettier badge
 
-The video extension allows you to embed .mp4/.webm/etc videos as defined by the
-HTML5 standard. It's just a wrapper around:
+The video extension allows you to embed ``.mp4``/``.webm``/``.ogg`` videos as defined by the HTML5 standard. It's a wrapper around the ``<video>`` tag. using a simple directive as:
 
-::
+.. code-block:: rst
 
-  <video width="320" height="240" controls>
-    <source src="movie.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-  </video>
+  .. video:: movie.mp4
 
+will be rendered as:
 
+.. code-block:: html
 
-Parameters
-===============
+   <video>
+      <source src="movie.mp4" type="video/mp4">
+   </video>
 
-The extension should expose pretty much all parameters from the HTML5 <video/>
-tag.
+The extension exposes pretty much all parameters from the HTML5 ``<video/>`` tag.
 
-Example::
-
-    .. video:: path/to/video.mp4
-       :width: 500
-       :height: 300
-       :autoplay:
-       :nocontrols:
-
-Please note that the width, height, autoplay and nocontrols parameters are all
-optional.
-
-Installing
-==========
-
-As usual with sphinx extensions, remember to add them to your config:
-
-::
-
-  extensions = [
-      'sphinxcontrib.video'
-  ]
-
-
-Links
------
-
-- Source: https://github.com/sphinx-contrib/sphinxcontrib-video
-- Bugs: https://github.com/sphinx-contrib/sphinxcontrib-video/issues
+More information about installation and usage in our `documentation <#>`__.

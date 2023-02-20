@@ -1,28 +1,51 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
+Configuration file for the Sphinx documentation builder.
 
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+This file only contains a selection of the most common options. For a full
+list see the documentation:
+https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
+
+# -- Path setup ----------------------------------------------------------------
+
+from datetime import datetime
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath('..'))
+
+# -- Project information -------------------------------------------------------
 
 project = 'sphinxcontrib-video'
-copyright = '2023, Raphael Massabot'
 author = 'Raphael Massabot'
+copyright = f'2018-{datetime.now().year}, {author}'
 release = '0.0.0'
 
-# -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+# -- General configuration -----------------------------------------------------
 
-extensions = []
-
-templates_path = ['_templates']
+extensions = ["sphinxcontrib.video", "sphinx_design"]
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# -- Options for HTML output ---------------------------------------------------
 
-
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
-html_theme = 'alabaster'
+html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
+html_css_files = ["custom.css"]
+html_context = {
+    "github_user": "sphinx-contrib",
+    "github_repo": "video",
+    "github_version": "master",
+    "doc_path": "docs",
+}
+html_theme_options = {
+    "logo": {"text": project},
+    "use_edit_page_button": True,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/sphinx-contrib/video",
+            "icon": "fa-brands fa-github",
+        }
+    ],
+}
+
