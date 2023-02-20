@@ -35,7 +35,9 @@ You can now add video directly in your documentation:
 
 .. code-block:: rst
 
-    .. video:: my_video.mp4
+    .. video:: video.mp4
+
+.. video:: video.mp4
 
 Advanced usage
 --------------
@@ -58,7 +60,9 @@ They can be used as any directive option:
 
 .. code-block:: rst
 
-    .. video:: my_video.mp4
+    .. video:: video.mp4
         :controls:
         :loop:
         :poster: image.png
+
+.. video:: video.mp4
