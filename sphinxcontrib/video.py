@@ -1,93 +1,125 @@
 """Video extention to embed video in a html sphinx output."""
 
-import os
+import re
+from typing import Dict, List
+from pathlib import Path
+from urllib.parse import urlparse
 
 from docutils import nodes
 from docutils.parsers.rst import Directive, directives
+from sphinx.util import logging
+
+logger = logging.getLogger(__name__)
+
+SUPPORTED_MIME_TYPES: Dict[str, str] = {
+    ".mp4": "video/mp4",
+    ".ogm": "video/ogg",
+    ".ogv": "video/ogg",
+    ".ogg": "video/ogg",
+    ".webm": "video/webm",
+}
+"Supported mime types of the link tag"
+
+SUPPORTED_OPTIONS: List[str] = [
+    "autoplay", "controls", "height", "loop", "muted", "poster", "preload", "width"
+]
+"List of the supported options attributes"
 
 
-def get_option(options, key, default):
-    """Get the the options from keys and replace them by default if non existing."""
-    if key not in options.keys():
-        return default
-
-    if isinstance(default, bool):
-        return True
-    else:
-        return options[key]
-
-
-class video(nodes.General, nodes.Element):
-    """Video node."""
-
+class video_node(nodes.General, nodes.Element):
+    """Video node"""
     pass
 
 
 class Video(Directive):
-    """Video directive.
+    """Video directive
 
     Wrapper for the html <video> tag embeding all the supported options
     """
 
     has_content = True
     required_arguments = 1
-    optional_arguments = 5
-    final_argument_whitespace = False
+    optional_arguments = 0
     option_spec = {
         "alt": directives.unchanged,
-        "width": directives.unchanged,
-        "height": directives.unchanged,
         "autoplay": directives.flag,
-        "nocontrols": directives.flag,
+        "controls": directives.flag,
+        "height": directives.unchanged,
+        "loop": directives.flag,
+        "muted": directives.flag,
+        "poster": directives.unchanged,
+        "preload": directives.unchanged,
+        "width": directives.unchanged,
     }
 
     def run(self):
         """Return the video node based on the set options."""
-        alt = get_option(self.options, "alt", "Video")
-        width = get_option(self.options, "width", "")
-        height = get_option(self.options, "height", "")
-        autoplay = get_option(self.options, "autoplay", False)
-        nocontrols = get_option(self.options, "nocontrols", False)
+
+        env = self.state.document.settings.env
+
+        # check options that need to be specific values
+        height = self.options.get("height")
+        if height and not re.match(r"(\d+)", height):
+            logger.warning(f"The provided height ({height}) is ignored as it's not an integer")
+            height = None
+
+        width = self.options.get("width")
+        if width and not re.match(r"(\d+)", width):
+            logger.warning(f"The provided width ({width}) is ignored as it's not an integer")
+            width = None
+
+        preload = self.options.get("preload", "auto")
+        valid_preload = ["auto", "metadata", "none"]
+        if preload not in valid_preload:
+            logger.warning(f"The provided preload ({preload}) is not an accepted value. defaulting to 'auto'")
+            preload = "auto"
+
+        # add video files as images in the builder
+        src = self.arguments[0]
+        if bool(urlparse(src).netloc):
+            env.images.add_file('', src)
+
+        suffix = Path(src).suffix
+        if not suffix in SUPPORTED_MIME_TYPES:
+            logger.warning(f"The provided file type ({suffix}) is not a supported format. defaulting to ''")
+        type = SUPPORTED_MIME_TYPES.get(suffix, "")
 
         return [
-            video(
-                path=self.arguments[0],
-                alt=alt,
-                width=width,
-                height=height,
-                autoplay=autoplay,
-                nocontrols=nocontrols,
+            video_node(
+                src = src,
+                type = type,
+                alt = self.options.get("alt", ""),
+                autoplay = "autoplay" in self.options,
+                controls = "controls" in self.options,
+                height = height or "",
+                loop = "loop" in self.options,
+                muted = "muted" in self.options,
+                poster = self.options.get("poster", ""),
+                preload = preload,
+                width = width or "",
             )
         ]
 
 
 def visit_video_node(self, node):
     """Entry point of the video node."""
-    extension = os.path.splitext(node["path"])[1][1:]
 
-    html_block = """
-    <video {width} {height} {nocontrols} {autoplay}>
-    <source src="{path}" type="video/{filetype}">
-    {alt}
-    </video>
-    """.format(
-        width='width="' + node["width"] + '"' if node["width"] else "",
-        height='height="' + node["height"] + '"' if node["height"] else "",
-        path=node["path"],
-        filetype=extension,
-        alt=node["alt"],
-        autoplay="autoplay" if node["autoplay"] else "",
-        nocontrols="" if node["nocontrols"] else "controls",
-    )
-    self.body.append(html_block)
+    # build the source
+    html_source = f'<source src="{node["src"]}" type="{node["type"]}">\n{node["alt"]}'
+
+    # build the video block
+    attr = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
+    html_video = f'<video {" ".join(attr)}>\n{html_source}\n</video>'
+
+    self.body.append(html_video)
 
 
 def depart_video_node(self, node):
-    """Exit of the video node."""
+    """Exit of the video node"""
     pass
 
 
 def setup(app):
-    """Add video node to the Sphinx builder."""
-    app.add_node(video, html=(visit_video_node, depart_video_node))
+    """Add video node to the Sphinx builder"""
+    app.add_node(video_node, html=(visit_video_node, depart_video_node))
     app.add_directive("video", Video)

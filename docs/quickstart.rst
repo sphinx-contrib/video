@@ -35,9 +35,9 @@ You can now add video directly in your documentation:
 
 .. code-block:: rst
 
-    .. video:: video.mp4
+    .. video:: _static/video.mp4
 
-.. video:: video.mp4
+.. video:: _static/video.mp4
 
 Advanced usage
 --------------
@@ -47,6 +47,7 @@ the video directive supports all the optional attributes from the html tag as su
 .. csv-table:: Optional Attributes
     :header: Attribute, value, Description
 
+    ``:alt:``,``str``,Specify the text to write when the video cannot be displayed
     ``:autoplay:``,,Specifies that the video will start playing as soon as it is ready
     ``:controls:``,,Specifies that video controls should be displayed (such as a play/pause button etc).
     ``:height:``,``int``,Sets the height of the video player in pixels
@@ -60,9 +61,13 @@ They can be used as any directive option:
 
 .. code-block:: rst
 
-    .. video:: video.mp4
+    .. video:: _static/video.mp4
         :controls:
         :loop:
-        :poster: image.png
+        :poster: _static/image.png
 
-.. video:: video.mp4
+.. video:: _static/video.mp4
+    :controls:
+    :autoplay:
+    :muted:
+    :loop:
