@@ -2,6 +2,18 @@
 sphinxcontrib-video
 ===================
 
+.. image:: https://img.shields.io/badge/License-Apache%202.0-yellow.svg
+    :target: https://github.com/sphinx-contrib/video/blob/master/LICENSE
+    :alt: License: MIT
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+   :alt: Black badge
+
+.. image:: https://img.shields.io/badge/code_style-prettier-ff69b4.svg
+   :target: https://github.com/prettier/prettier
+   :alt: prettier badge
+
 The video extension allows you to embed .mp4/.webm/etc videos as defined by the
 HTML5 standard. It's just a wrapper around:
 
@@ -17,7 +29,7 @@ HTML5 standard. It's just a wrapper around:
 Parameters
 ===============
 
-The extension should expose pretty much all parameters from the HTML5 <video/> 
+The extension should expose pretty much all parameters from the HTML5 <video/>
 tag.
 
 Example::
@@ -28,7 +40,7 @@ Example::
        :autoplay:
        :nocontrols:
 
-Please note that the width, height, autoplay and nocontrols parameters are all 
+Please note that the width, height, autoplay and nocontrols parameters are all
 optional.
 
 Installing
