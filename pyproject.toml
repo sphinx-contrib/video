@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+version = "0.0.0"
+name = "sphinxcontrib-video"
+description = "Allows embedding of HTML5 videos in sphinx"
+description-file = "README.rst"
+authors = [{name = "Raphael Massabot", email = "rmassabot@gmail.com"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Framework :: Sphinx :: Extension",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Documentation",
+    "Topic :: Utilities",
+]
+urls = {Homepage = "http://www.sphinx-doc.org/"}
+
+[tool.distutils.global]
+setup-hooks = ["pbr.hooks.setup_hook"]
+
+[tool.files]
+packages = """
+sphinxcontrib"""
+namespace_packages = """
+sphinxcontrib"""
+
+[tool.wheel]
+universal = "1"
+
+[tool.mypy]
+python_version = "2.7"
+show_column_numbers = true
+show_error_context = true
+ignore_missing_imports = true
+follow_imports = "skip"
+incremental = true
+check_untyped_defs = true
+warn_unused_ignores = true
+
+[tool.flake8]
+show-source = "True"
+
+[tool.setuptools]
+include-package-data = false
