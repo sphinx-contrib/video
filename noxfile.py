@@ -11,3 +11,9 @@ def lint(session):
     """Apply the pre-commits."""
     session.install("pre-commit")
     session.run("pre-commit", "run", "--a", *session.posargs)
+
+@nox.session(reuse_venv=True)
+def docs(session):
+    """Build the documentation."""
+    session.install(".[doc]")
+    session.run("sphinx-build", "-b", "html", "docs", "docs/_build/html")
