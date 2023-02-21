@@ -1,6 +1,5 @@
 """Video extention to embed video in a html sphinx output."""
 
-import re
 from typing import Dict, List
 from pathlib import Path
 from urllib.parse import urlparse
@@ -59,12 +58,12 @@ class Video(Directive):
 
         # check options that need to be specific values
         height = self.options.get("height")
-        if height and not re.match(r"(\d+)", height):
+        if height and not height.isdigit():
             logger.warning(f"The provided height ({height}) is ignored as it's not an integer")
             height = None
 
         width = self.options.get("width")
-        if width and not re.match(r"(\d+)", width):
+        if width and not width.isdigit():
             logger.warning(f"The provided width ({width}) is ignored as it's not an integer")
             width = None
 

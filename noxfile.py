@@ -17,3 +17,10 @@ def docs(session):
     """Build the documentation."""
     session.install(".[doc]")
     session.run("sphinx-build", "-b=html", "-a", "-E", "docs", "docs/_build/html")
+
+@nox.session(reuse_venv=True)
+def test(session):
+    """Run all the test using the environment varialbe of the running machine."""
+    session.install(".[test]")
+    test_files = session.posargs or ["tests"]
+    session.run("pytest", "--color=yes", *test_files)
