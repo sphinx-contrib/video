@@ -17,7 +17,10 @@ def lint(session):
 def docs(session):
     """Build the documentation."""
     session.install(".[doc]")
-    session.run("sphinx-build", "-b=html", "-a", "-E", "docs", "docs/_build/html")
+    builder = session.posargs[0] or "html"
+    session.run(
+        "sphinx-build", f"-b={builder}", "-a", "-E", "docs", f"docs/_build/{builder}"
+    )
 
 
 @nox.session(reuse_venv=True)
