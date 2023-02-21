@@ -40,7 +40,7 @@ content-type = "text/markdown"
 repository = "https://github.com/sphinx-contrib/video"
 
 [project.optional-dependencies]
-dev = ["nox", "pre-commit"]
+dev = ["nox", "pre-commit", "mypy"]
 test = ["pytest", "beautifulsoup4", "pytest-regressions", "pytest-cov"]
 doc = ["pydata-sphinx-theme==0.13.0rc3","sphinx-design"]
 
@@ -66,3 +66,10 @@ convention = "google"
 
 [tool.coverage.run]
 source = ["sphinxcontrib.video"]
+
+[tool.mypy]
+scripts_are_modules = true
+ignore_missing_imports = true
+install_types = true
+non_interactive = true
+warn_redundant_casts = true

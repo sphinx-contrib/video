@@ -26,3 +26,11 @@ def test(session):
     session.install(".[test]")
     test_files = session.posargs or ["tests"]
     session.run("pytest", "--color=yes", "--cov", "--cov-report=html", *test_files)
+
+
+@nox.session(reuse_venv=True)
+def mypy(session):
+    """Run a mypy check of the lib."""
+    session.install(".[dev]")
+    test_files = session.posargs or ["sphinxcontrib"]
+    session.run("mypy", *test_files)

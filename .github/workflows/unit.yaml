@@ -29,7 +29,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: pip install .[test]
+        run: pip install .[test,dev]
+
+      - name: Check static typing
+        run: mypy sphinxcontrib
 
       - name: test with pytest
         run: pytest --color=yes --cov --cov-report=xml tests
