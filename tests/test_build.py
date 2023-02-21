@@ -6,6 +6,14 @@ from bs4 import BeautifulSoup, formatter
 fmt = formatter.HTMLFormatter(indent=2)
 
 
+@pytest.mark.sphinx("latex", testroot="video")
+def test_video_latex(app, status, warning, file_regression):
+    """Build a latex output (unsuported)."""
+    app.builder.build_all()
+
+    assert "unsupported output format (node skipped)" in warning.getvalue()
+
+
 @pytest.mark.sphinx(testroot="video")
 def test_video(app, status, warning, file_regression):
     """Build a video without options."""

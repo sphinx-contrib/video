@@ -115,8 +115,8 @@ class Video(Directive):
         ]
 
 
-def visit_video_node(self, node: video_node) -> None:
-    """Entry point of the video node."""
+def visit_video_node_html(self, node: video_node) -> None:
+    """Entry point of the html video node."""
     # build the source
     html_source: str = (
         f'<source src="{node["src"]}" type="{node["type"]}">\n{node["alt"]}'
@@ -129,14 +129,28 @@ def visit_video_node(self, node: video_node) -> None:
     self.body.append(html_video)
 
 
-def depart_video_node(self, node: video_node) -> None:
-    """Exit of the video node."""
+def depart_video_node_html(*args) -> None:
+    """Exit of the html video node."""
     pass
+
+
+def visit_video_node_unsuported(self, node: video_node) -> None:
+    """Entry point of the ignored video node."""
+    logger.warning(f"video {node['src']}: unsupported output format (node skipped)")
+    raise nodes.SkipNode
 
 
 def setup(app) -> None:
     """Add video node to the Sphinx builder."""
-    app.add_node(video_node, html=(visit_video_node, depart_video_node))
+    app.add_node(
+        video_node,
+        html=(visit_video_node_html, depart_video_node_html),
+        epub=(visit_video_node_unsuported, None),
+        latex=(visit_video_node_unsuported, None),
+        man=(visit_video_node_unsuported, None),
+        texinfo=(visit_video_node_unsuported, None),
+        text=(visit_video_node_unsuported, None),
+    )
     app.add_directive("video", Video)
 
     return {
