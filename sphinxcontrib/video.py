@@ -1,7 +1,7 @@
 """Video extention to embed video in a html sphinx output."""
 
-from typing import Dict, List
 from pathlib import Path
+from typing import Dict, List
 from urllib.parse import urlparse
 
 from docutils import nodes
@@ -20,18 +20,26 @@ SUPPORTED_MIME_TYPES: Dict[str, str] = {
 "Supported mime types of the link tag"
 
 SUPPORTED_OPTIONS: List[str] = [
-    "autoplay", "controls", "height", "loop", "muted", "poster", "preload", "width"
+    "autoplay",
+    "controls",
+    "height",
+    "loop",
+    "muted",
+    "poster",
+    "preload",
+    "width",
 ]
 "List of the supported options attributes"
 
 
 class video_node(nodes.General, nodes.Element):
-    """Video node"""
+    """Video node."""
+
     pass
 
 
 class Video(Directive):
-    """Video directive
+    """Video directive.
 
     Wrapper for the html <video> tag embeding all the supported options
     """
@@ -53,56 +61,62 @@ class Video(Directive):
 
     def run(self):
         """Return the video node based on the set options."""
-
         env = self.state.document.settings.env
 
         # check options that need to be specific values
         height = self.options.get("height")
         if height and not height.isdigit():
-            logger.warning(f"The provided height ({height}) is ignored as it's not an integer")
+            logger.warning(
+                f"The provided height ({height}) is ignored as it's not an integer"
+            )
             height = None
 
         width = self.options.get("width")
         if width and not width.isdigit():
-            logger.warning(f"The provided width ({width}) is ignored as it's not an integer")
+            logger.warning(
+                f"The provided width ({width}) is ignored as it's not an integer"
+            )
             width = None
 
         preload = self.options.get("preload", "auto")
         valid_preload = ["auto", "metadata", "none"]
         if preload not in valid_preload:
-            logger.warning(f"The provided preload ({preload}) is not an accepted value. defaulting to 'auto'")
+            logger.warning(
+                f"The provided preload ({preload}) is not an accepted value. defaulting to 'auto'"
+            )
             preload = "auto"
 
         # add video files as images in the builder
         src = self.arguments[0]
-        if bool(urlparse(src).netloc):
-            env.images.add_file('', src)
+        if not bool(urlparse(src).netloc):
+            env.images.add_file("", src)
 
         suffix = Path(src).suffix
-        if not suffix in SUPPORTED_MIME_TYPES:
-            logger.warning(f"The provided file type ({suffix}) is not a supported format. defaulting to ''")
+        if suffix not in SUPPORTED_MIME_TYPES:
+            logger.warning(
+                f"The provided file type ({suffix}) is not a supported format. defaulting to ''"
+            )
         type = SUPPORTED_MIME_TYPES.get(suffix, "")
 
         return [
             video_node(
-                src = src,
-                type = type,
-                alt = self.options.get("alt", ""),
-                autoplay = "autoplay" in self.options,
-                controls = "controls" in self.options,
-                height = height or "",
-                loop = "loop" in self.options,
-                muted = "muted" in self.options,
-                poster = self.options.get("poster", ""),
-                preload = preload,
-                width = width or "",
+                src=src,
+                type=type,
+                alt=self.options.get("alt", ""),
+                autoplay="autoplay" in self.options,
+                controls="controls" in self.options,
+                height=height or "",
+                loop="loop" in self.options,
+                muted="muted" in self.options,
+                poster=self.options.get("poster", ""),
+                preload=preload,
+                width=width or "",
             )
         ]
 
 
 def visit_video_node(self, node):
     """Entry point of the video node."""
-
     # build the source
     html_source = f'<source src="{node["src"]}" type="{node["type"]}">\n{node["alt"]}'
 
@@ -114,11 +128,11 @@ def visit_video_node(self, node):
 
 
 def depart_video_node(self, node):
-    """Exit of the video node"""
+    """Exit of the video node."""
     pass
 
 
 def setup(app):
-    """Add video node to the Sphinx builder"""
+    """Add video node to the Sphinx builder."""
     app.add_node(video_node, html=(visit_video_node, depart_video_node))
     app.add_directive("video", Video)

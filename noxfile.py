@@ -12,15 +12,17 @@ def lint(session):
     session.install("pre-commit")
     session.run("pre-commit", "run", "--a", *session.posargs)
 
+
 @nox.session(reuse_venv=True)
 def docs(session):
     """Build the documentation."""
     session.install(".[doc]")
     session.run("sphinx-build", "-b=html", "-a", "-E", "docs", "docs/_build/html")
 
+
 @nox.session(reuse_venv=True)
 def test(session):
     """Run all the test using the environment varialbe of the running machine."""
     session.install(".[test]")
     test_files = session.posargs or ["tests"]
-    session.run("pytest", "--color=yes", *test_files)
+    session.run("pytest", "--color=yes", "--cov", "--cov-report=html", *test_files)

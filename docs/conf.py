@@ -1,5 +1,4 @@
-"""
-Configuration file for the Sphinx documentation builder.
+"""Configuration file for the Sphinx documentation builder.
 
 This file only contains a selection of the most common options. For a full
 list see the documentation:
@@ -8,28 +7,28 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 # -- Path setup ----------------------------------------------------------------
 
-from datetime import datetime
-import sys
 import os
+import sys
+from datetime import datetime
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -------------------------------------------------------
 
-project = 'sphinxcontrib-video'
-author = 'Raphael Massabot'
-copyright = f'2018-{datetime.now().year}, {author}'
-release = '0.0.0'
+project = "sphinxcontrib-video"
+author = "Raphael Massabot"
+copyright = f"2018-{datetime.now().year}, {author}"
+release = "0.0.0"
 
 # -- General configuration -----------------------------------------------------
 
 extensions = ["sphinxcontrib.video", "sphinx_design"]
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- Options for HTML output ---------------------------------------------------
 
-html_theme = 'pydata_sphinx_theme'
-html_static_path = ['_static']
+html_theme = "pydata_sphinx_theme"
+html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 html_context = {
     "github_user": "sphinx-contrib",
@@ -48,4 +47,3 @@ html_theme_options = {
         }
     ],
 }
-
