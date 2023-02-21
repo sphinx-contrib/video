@@ -49,7 +49,7 @@ the video directive supports all the optional attributes from the html tag as su
 
     ``:alt:``,``str``,Specify the text to write when the video cannot be displayed
     ``:autoplay:``,,Specifies that the video will start playing as soon as it is ready
-    ``:controls:``,,Specifies that video controls should be displayed (such as a play/pause button etc).
+    ``:nocontrols:``,,Specifies that video controls should not be displayed (such as a play/pause button etc).
     ``:height:``,``int``,Sets the height of the video player in pixels
     ``:loop:``,,Specifies that the video will start over again, every time it is finished
     ``:muted:``,,Specifies that the audio output of the video should be muted
@@ -62,12 +62,12 @@ They can be used as any directive option:
 .. code-block:: rst
 
     .. video:: _static/video.mp4
-        :controls:
+        :nocontrols:
         :loop:
         :poster: _static/image.png
 
 .. video:: _static/video.mp4
-    :controls:
+    :nocontrols:
     :autoplay:
     :muted:
     :loop:

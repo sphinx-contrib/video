@@ -4,7 +4,7 @@ video
 .. video:: _static/video.mp4
     :alt: You cannot display videos
     :autoplay:
-    :controls:
+    :nocontrols:
     :height: 320
     :loop:
     :muted:

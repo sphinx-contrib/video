@@ -34,7 +34,7 @@ def test_wrong_format(app, status, warning, file_regression):
     app.builder.build_all()
 
     assert (
-        "The provided file type (.mkv) is not a supported format. defaulting to ''"
+        'The provided file type (".mkv") is not a supported format. defaulting to ""'
         in warning.getvalue()
     )
 

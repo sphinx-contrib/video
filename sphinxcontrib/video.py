@@ -50,7 +50,7 @@ class Video(Directive):
     option_spec: Dict[str, Any] = {
         "alt": directives.unchanged,
         "autoplay": directives.flag,
-        "controls": directives.flag,
+        "nocontrols": directives.flag,
         "height": directives.unchanged,
         "loop": directives.flag,
         "muted": directives.flag,
@@ -104,7 +104,7 @@ class Video(Directive):
                 type=type,
                 alt=self.options.get("alt", ""),
                 autoplay="autoplay" in self.options,
-                controls="controls" in self.options,
+                controls="nocontrols" not in self.options,
                 height=height,
                 loop="loop" in self.options,
                 muted="muted" in self.options,
