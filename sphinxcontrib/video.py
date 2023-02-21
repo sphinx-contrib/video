@@ -138,3 +138,8 @@ def setup(app) -> None:
     """Add video node to the Sphinx builder."""
     app.add_node(video_node, html=(visit_video_node, depart_video_node))
     app.add_directive("video", Video)
+
+    return {
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+    }
