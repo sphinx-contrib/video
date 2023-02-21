@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=61.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sphinxcontrib-video"
+version = "0.0.0"
+description = "Allows embedding of HTML5 videos in sphinx"
+requires-python = ">=3.6.9"
+dependencies = ["sphinx"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Sphinx :: Extension",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Documentation",
+    "Topic :: Utilities",
+]
+
+[[project.authors]]
+name = "Raphael Massabot"
+email = "rmassabot@gmail.com"
+
+[project.license]
+text = "Apache Software License"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+repository = "https://github.com/sphinx-contrib/video"
+
+[project.optional-dependencies]
+dev = ["nox", "pre-commit", "mypy"]
+test = ["pytest", "beautifulsoup4", "pytest-regressions", "pytest-cov"]
+doc = ["pydata-sphinx-theme==0.13.0rc3","sphinx-design"]
+
+[tool.setuptools]
+include-package-data = false
+license-files = ["LICENSE"]
+packages = ["sphinxcontrib"]
+
+[tool.ruff]
+ignore-init-module-imports = true
+fix = true
+select = ["E", "F", "W", "I", "D", "RUF"]
+ignore = ["E501"]  # line too long | Black take care of it
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.per-file-ignores]
+"setup.py" = ["D100"] # nothing to see there
+
+[tool.coverage.run]
+source = ["sphinxcontrib.video"]
+
+[tool.mypy]
+scripts_are_modules = true
+ignore_missing_imports = true
+install_types = true
+non_interactive = true
+warn_redundant_casts = true

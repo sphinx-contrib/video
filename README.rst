@@ -1,50 +1,32 @@
-===================
 sphinxcontrib-video
 ===================
 
-The video extension allows you to embed .mp4/.webm/etc videos as defined by the
-HTML5 standard. It's just a wrapper around:
+.. image:: https://img.shields.io/badge/License-Apache%202.0-yellow.svg
+    :target: https://github.com/sphinx-contrib/video/blob/master/LICENSE
+    :alt: License: MIT
 
-::
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+   :alt: Black badge
 
-  <video width="320" height="240" controls>
-    <source src="movie.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-  </video>
+.. image:: https://img.shields.io/badge/code_style-prettier-ff69b4.svg
+   :target: https://github.com/prettier/prettier
+   :alt: prettier badge
 
+The video extension allows you to embed ``.mp4``/``.webm``/``.ogg`` videos as defined by the HTML5 standard. It's a wrapper around the ``<video>`` tag. using a simple directive as:
 
+.. code-block:: rst
 
-Parameters
-===============
+  .. video:: movie.mp4
 
-The extension should expose pretty much all parameters from the HTML5 <video/> 
-tag.
+will be rendered as:
 
-Example::
+.. code-block:: html
 
-    .. video:: path/to/video.mp4
-       :width: 500
-       :height: 300
-       :autoplay:
-       :nocontrols:
+   <video>
+      <source src="movie.mp4" type="video/mp4">
+   </video>
 
-Please note that the width, height, autoplay and nocontrols parameters are all 
-optional.
+The extension exposes pretty much all parameters from the HTML5 ``<video/>`` tag.
 
-Installing
-==========
-
-As usual with sphinx extensions, remember to add them to your config:
-
-::
-
-  extensions = [
-      'sphinxcontrib.video'
-  ]
-
-
-Links
------
-
-- Source: https://github.com/sphinx-contrib/sphinxcontrib-video
-- Bugs: https://github.com/sphinx-contrib/sphinxcontrib-video/issues
+More information about installation and usage in our `documentation <#>`__.

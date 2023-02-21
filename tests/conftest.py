@@ -1,9 +1,12 @@
-"""
-    pytest config for sphinxcontrib/video/tests
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""Pytest configuration."""
 
-    :copyright: Copyright 2017 by Raphael Massabot <rmassabot@gmail.com>
-    :license: BSD, see LICENSE for details.
-"""
+import pytest
+from sphinx.testing.path import path
 
-pytest_plugins = 'sphinx.testing.fixtures'
+pytest_plugins = "sphinx.testing.fixtures"
+
+
+@pytest.fixture(scope="session")
+def rootdir():
+    """Get the root directory for the whole test session."""
+    return path(__file__).parent.abspath() / "roots"
