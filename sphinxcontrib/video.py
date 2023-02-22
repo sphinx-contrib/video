@@ -1,7 +1,7 @@
 """Video extention to embed video in a html sphinx output."""
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 from urllib.parse import urlparse
 
 from docutils import nodes
@@ -32,6 +32,31 @@ SUPPORTED_OPTIONS: List[str] = [
 "List of the supported options attributes"
 
 
+def get_video(src: str, env) -> Tuple[str, str]:
+    """Return video and suffix.
+
+    Load the video to the static directory if necessary and process the suffix. Raise a warning if not supported but do not stop the computation.
+
+    Args:
+        src: The source of the video file (can be local or url)
+        env: the build environment
+
+    Returns:
+        the src file, the extention suffix
+    """
+    if not bool(urlparse(src).netloc):
+        env.images.add_file("", src)
+
+    suffix = Path(src).suffix
+    if suffix not in SUPPORTED_MIME_TYPES:
+        logger.warning(
+            f'The provided file type ("{suffix}") is not a supported format. defaulting to ""'
+        )
+    type = SUPPORTED_MIME_TYPES.get(suffix, "")
+
+    return (src, type)
+
+
 class video_node(nodes.General, nodes.Element):
     """Video node."""
 
@@ -46,7 +71,7 @@ class Video(Directive):
 
     has_content: bool = True
     required_arguments: int = 1
-    optional_arguments: int = 0
+    optional_arguments: int = 1
     option_spec: Dict[str, Any] = {
         "alt": directives.unchanged,
         "autoplay": directives.flag,
@@ -87,21 +112,15 @@ class Video(Directive):
             preload = "auto"
 
         # add video files as images in the builder
-        src = self.arguments[0]
-        if not bool(urlparse(src).netloc):
-            env.images.add_file("", src)
-
-        suffix = Path(src).suffix
-        if suffix not in SUPPORTED_MIME_TYPES:
-            logger.warning(
-                f'The provided file type ("{suffix}") is not a supported format. defaulting to ""'
-            )
-        type = SUPPORTED_MIME_TYPES.get(suffix, "")
+        primary_src = get_video(self.arguments[0], env)
+        secondary_src = (
+            get_video(self.arguments[0], env) if len(self.arguments) == 2 else None
+        )
 
         return [
             video_node(
-                src=src,
-                type=type,
+                primary_src=primary_src,
+                secondary_src=secondary_src,
                 alt=self.options.get("alt", ""),
                 autoplay="autoplay" in self.options,
                 controls="nocontrols" not in self.options,
@@ -117,26 +136,32 @@ class Video(Directive):
 
 def visit_video_node_html(self, node: video_node) -> None:
     """Entry point of the html video node."""
-    # build the source
-    html_source: str = (
-        f'<source src="{node["src"]}" type="{node["type"]}">\n{node["alt"]}'
-    )
-
-    # build the video block
+    # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
-    html_video: str = f'<video {" ".join(attr)}>\n{html_source}\n</video>'
+    html: str = f"<video {' '.join(attr)}>"
 
-    self.body.append(html_video)
+    # build the sources
+    html_source = '<source src="{}" type="{}">'
+    html += html_source.format(*node["primary_src"])
+    if node["secondary_src"] is not None:
+        html += html_source.format(*node["secondary_src"])
+
+    # add the alternative message
+    html += node["alt"]
+
+    self.body.append(html)
 
 
-def depart_video_node_html(*args) -> None:
+def depart_video_node_html(self, node: video_node) -> None:
     """Exit of the html video node."""
-    pass
+    self.body.append("</video>")
 
 
 def visit_video_node_unsuported(self, node: video_node) -> None:
     """Entry point of the ignored video node."""
-    logger.warning(f"video {node['src']}: unsupported output format (node skipped)")
+    logger.warning(
+        f"video {node['primary_src']}: unsupported output format (node skipped)"
+    )
     raise nodes.SkipNode
 
 

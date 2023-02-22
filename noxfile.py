@@ -17,7 +17,7 @@ def lint(session):
 def docs(session):
     """Build the documentation."""
     session.install(".[doc]")
-    builder = session.posargs[0] or "html"
+    builder = session.posargs[0] if session.posargs else "html"
     session.run(
         "sphinx-build", f"-b={builder}", "-a", "-E", "docs", f"docs/_build/{builder}"
     )
