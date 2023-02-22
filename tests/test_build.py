@@ -3,7 +3,7 @@
 import pytest
 from bs4 import BeautifulSoup, formatter
 
-fmt = formatter.HTMLFormatter(indent=2)
+fmt = formatter.HTMLFormatter(indent=2, void_element_close_prefix=" /")
 
 
 @pytest.mark.sphinx("latex", testroot="video")
