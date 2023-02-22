@@ -8,6 +8,7 @@ from docutils import nodes
 from docutils.parsers.rst import Directive, directives
 from sphinx.application import Sphinx
 from sphinx.util import logging
+from sphinx.util.docutils import SphinxTranslator
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +142,7 @@ class Video(Directive):
         ]
 
 
-def visit_video_node_html(self, node: video_node) -> None:
+def visit_video_node_html(translator: SphinxTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
     # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
@@ -156,15 +157,15 @@ def visit_video_node_html(self, node: video_node) -> None:
     # add the alternative message
     html += node["alt"]
 
-    self.body.append(html)
+    translator.body.append(html)
 
 
-def depart_video_node_html(self, node: video_node) -> None:
+def depart_video_node_html(translator: SphinxTranslator, node: video_node) -> None:
     """Exit of the html video node."""
-    self.body.append("</video>")
+    translator.body.append("</video>")
 
 
-def visit_video_node_unsuported(self, node: video_node) -> None:
+def visit_video_node_unsuported(translator: SphinxTranslator, node: video_node) -> None:
     """Entry point of the ignored video node."""
     logger.warning(
         f"video {node['primary_src']}: unsupported output format (node skipped)"
@@ -172,7 +173,7 @@ def visit_video_node_unsuported(self, node: video_node) -> None:
     raise nodes.SkipNode
 
 
-def setup(app: Sphinx) -> None:
+def setup(app: Sphinx) -> Dict[str, bool]:
     """Add video node and parameters to the Sphinx builder."""
     app.add_config_value("video_enforce_extra_source", False, "html")
     app.add_node(
