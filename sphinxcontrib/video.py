@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 
 from docutils import nodes
 from docutils.parsers.rst import Directive, directives
+from sphinx.application import Sphinx
 from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
@@ -111,11 +112,17 @@ class Video(Directive):
             )
             preload = "auto"
 
-        # add video files as images in the builder
+        # add the primary video files as images in the builder
         primary_src = get_video(self.arguments[0], env)
-        secondary_src = (
-            get_video(self.arguments[0], env) if len(self.arguments) == 2 else None
-        )
+
+        # add the secondary video files as images in the builder if necessary
+        secondary_src = None
+        if len(self.arguments) == 2:
+            secondary_src = get_video(self.arguments[1], env)
+        elif env.config.video_enforce_extra_source is True:
+            logger.warning(
+                f'A secondary source should be provided for "{self.arguments[0]}"'
+            )
 
         return [
             video_node(
@@ -165,8 +172,9 @@ def visit_video_node_unsuported(self, node: video_node) -> None:
     raise nodes.SkipNode
 
 
-def setup(app) -> None:
-    """Add video node to the Sphinx builder."""
+def setup(app: Sphinx) -> None:
+    """Add video node and parameters to the Sphinx builder."""
+    app.add_config_value("video_enforce_extra_source", False, "html")
     app.add_node(
         video_node,
         html=(visit_video_node_html, depart_video_node_html),

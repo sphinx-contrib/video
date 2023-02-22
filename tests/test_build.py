@@ -36,17 +36,6 @@ def test_video_options(app, status, warning, file_regression):
     file_regression.check(video, basename="video_options", extension=".html")
 
 
-@pytest.mark.sphinx(testroot="video")
-def test_video_secondary(app, status, warning, file_regression):
-    """Build a video without options."""
-    app.builder.build_all()
-
-    html = (app.outdir / "mp4_secondary.html").read_text(encoding="utf8")
-    html = BeautifulSoup(html, "html.parser")
-    video = html.select("video")[0].prettify(formatter=fmt)
-    file_regression.check(video, basename="video_secondary", extension=".html")
-
-
 @pytest.mark.sphinx(testroot="video-warnings")
 def test_wrong_format(app, status, warning, file_regression):
     """Build a video with  a non supported format and check the error message."""
@@ -98,3 +87,19 @@ def test_wrong_preload(app, status, warning, file_regression):
     html = BeautifulSoup(html, "html.parser")
     video = html.select("video")[0].prettify(formatter=fmt)
     file_regression.check(video, basename="video_no_options", extension=".html")
+
+
+@pytest.mark.sphinx(testroot="video-secondary")
+def test_video_force_secondary(app, status, warning, file_regression):
+    """Build a latex output (unsuported)."""
+    app.builder.build_all()
+
+    assert (
+        'A secondary source should be provided for "_static/video.mp4"'
+        in warning.getvalue()
+    )
+
+    html = (app.outdir / "mp4_secondary.html").read_text(encoding="utf8")
+    html = BeautifulSoup(html, "html.parser")
+    video = html.select("video")[0].prettify(formatter=fmt)
+    file_regression.check(video, basename="video_secondary", extension=".html")
