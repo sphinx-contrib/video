@@ -5,10 +5,11 @@ from typing import Any, Dict, List, Tuple
 from urllib.parse import urlparse
 
 from docutils import nodes
-from docutils.parsers.rst import Directive, directives
+from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
+from sphinx.environment import BuildEnvironment
 from sphinx.util import logging
-from sphinx.util.docutils import SphinxTranslator
+from sphinx.util.docutils import SphinxDirective, SphinxTranslator
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ SUPPORTED_OPTIONS: List[str] = [
 "List of the supported options attributes"
 
 
-def get_video(src: str, env) -> Tuple[str, str]:
+def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str]:
     """Return video and suffix.
 
     Load the video to the static directory if necessary and process the suffix. Raise a warning if not supported but do not stop the computation.
@@ -65,7 +66,7 @@ class video_node(nodes.General, nodes.Element):
     pass
 
 
-class Video(Directive):
+class Video(SphinxDirective):
     """Video directive.
 
     Wrapper for the html <video> tag embeding all the supported options
@@ -88,7 +89,7 @@ class Video(Directive):
 
     def run(self) -> List[video_node]:
         """Return the video node based on the set options."""
-        env = self.state.document.settings.env
+        env: BuildEnvironment = self.env
 
         # check options that need to be specific values
         height: str = self.options.get("height", "")
