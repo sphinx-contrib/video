@@ -1,12 +1,15 @@
 """Video extention to embed video in a html sphinx output."""
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 from urllib.parse import urlparse
 
 from docutils import nodes
-from docutils.parsers.rst import Directive, directives
+from docutils.parsers.rst import directives
+from sphinx.application import Sphinx
+from sphinx.environment import BuildEnvironment
 from sphinx.util import logging
+from sphinx.util.docutils import SphinxDirective, SphinxTranslator
 
 logger = logging.getLogger(__name__)
 
@@ -32,13 +35,38 @@ SUPPORTED_OPTIONS: List[str] = [
 "List of the supported options attributes"
 
 
+def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str]:
+    """Return video and suffix.
+
+    Load the video to the static directory if necessary and process the suffix. Raise a warning if not supported but do not stop the computation.
+
+    Args:
+        src: The source of the video file (can be local or url)
+        env: the build environment
+
+    Returns:
+        the src file, the extention suffix
+    """
+    if not bool(urlparse(src).netloc):
+        env.images.add_file("", src)
+
+    suffix = Path(src).suffix
+    if suffix not in SUPPORTED_MIME_TYPES:
+        logger.warning(
+            f'The provided file type ("{suffix}") is not a supported format. defaulting to ""'
+        )
+    type = SUPPORTED_MIME_TYPES.get(suffix, "")
+
+    return (src, type)
+
+
 class video_node(nodes.General, nodes.Element):
     """Video node."""
 
     pass
 
 
-class Video(Directive):
+class Video(SphinxDirective):
     """Video directive.
 
     Wrapper for the html <video> tag embeding all the supported options
@@ -46,7 +74,7 @@ class Video(Directive):
 
     has_content: bool = True
     required_arguments: int = 1
-    optional_arguments: int = 0
+    optional_arguments: int = 1
     option_spec: Dict[str, Any] = {
         "alt": directives.unchanged,
         "autoplay": directives.flag,
@@ -61,7 +89,7 @@ class Video(Directive):
 
     def run(self) -> List[video_node]:
         """Return the video node based on the set options."""
-        env = self.state.document.settings.env
+        env: BuildEnvironment = self.env
 
         # check options that need to be specific values
         height: str = self.options.get("height", "")
@@ -86,22 +114,22 @@ class Video(Directive):
             )
             preload = "auto"
 
-        # add video files as images in the builder
-        src = self.arguments[0]
-        if not bool(urlparse(src).netloc):
-            env.images.add_file("", src)
+        # add the primary video files as images in the builder
+        primary_src = get_video(self.arguments[0], env)
 
-        suffix = Path(src).suffix
-        if suffix not in SUPPORTED_MIME_TYPES:
+        # add the secondary video files as images in the builder if necessary
+        secondary_src = None
+        if len(self.arguments) == 2:
+            secondary_src = get_video(self.arguments[1], env)
+        elif env.config.video_enforce_extra_source is True:
             logger.warning(
-                f'The provided file type ("{suffix}") is not a supported format. defaulting to ""'
+                f'A secondary source should be provided for "{self.arguments[0]}"'
             )
-        type = SUPPORTED_MIME_TYPES.get(suffix, "")
 
         return [
             video_node(
-                src=src,
-                type=type,
+                primary_src=primary_src,
+                secondary_src=secondary_src,
                 alt=self.options.get("alt", ""),
                 autoplay="autoplay" in self.options,
                 controls="nocontrols" not in self.options,
@@ -115,33 +143,40 @@ class Video(Directive):
         ]
 
 
-def visit_video_node_html(self, node: video_node) -> None:
+def visit_video_node_html(translator: SphinxTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
-    # build the source
-    html_source: str = (
-        f'<source src="{node["src"]}" type="{node["type"]}">\n{node["alt"]}'
-    )
-
-    # build the video block
+    # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
-    html_video: str = f'<video {" ".join(attr)}>\n{html_source}\n</video>'
+    html: str = f"<video {' '.join(attr)}>"
 
-    self.body.append(html_video)
+    # build the sources
+    html_source = '<source src="{}" type="{}">'
+    html += html_source.format(*node["primary_src"])
+    if node["secondary_src"] is not None:
+        html += html_source.format(*node["secondary_src"])
+
+    # add the alternative message
+    html += node["alt"]
+
+    translator.body.append(html)
 
 
-def depart_video_node_html(*args) -> None:
+def depart_video_node_html(translator: SphinxTranslator, node: video_node) -> None:
     """Exit of the html video node."""
-    pass
+    translator.body.append("</video>")
 
 
-def visit_video_node_unsuported(self, node: video_node) -> None:
+def visit_video_node_unsuported(translator: SphinxTranslator, node: video_node) -> None:
     """Entry point of the ignored video node."""
-    logger.warning(f"video {node['src']}: unsupported output format (node skipped)")
+    logger.warning(
+        f"video {node['primary_src']}: unsupported output format (node skipped)"
+    )
     raise nodes.SkipNode
 
 
-def setup(app) -> None:
-    """Add video node to the Sphinx builder."""
+def setup(app: Sphinx) -> Dict[str, bool]:
+    """Add video node and parameters to the Sphinx builder."""
+    app.add_config_value("video_enforce_extra_source", False, "html")
     app.add_node(
         video_node,
         html=(visit_video_node_html, depart_video_node_html),

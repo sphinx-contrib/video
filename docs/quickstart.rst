@@ -39,8 +39,8 @@ You can now add video directly in your documentation:
 
 .. video:: _static/video.mp4
 
-Advanced usage
---------------
+Options
+-------
 
 the video directive supports all the optional attributes from the html tag as summurazied in the following table:
 
@@ -71,3 +71,24 @@ They can be used as any directive option:
     :autoplay:
     :muted:
     :loop:
+
+Advanced Usage
+--------------
+
+The browser used by the user may not support the codec of the primary source set in the directive. The ``<video>`` tag offers the possibility to add multiple sources, the first one compatible being the one displayed on screen. To use this options simply add the alternative source as a second argument to your video:
+
+.. code-block:: rst
+
+    .. video:: _static/video.webm _static/video.mp4
+
+.. video:: _static/video.webm _static/video.mp4
+
+.. note::
+
+    to enforce this behavior set the sphinx parameter ``video_enforce_extra_source`` to ``True`` in your conf.py, it will then raise a warning when a secondary source is missing.
+
+    .. code-block:: python
+
+        # conf.py
+
+        video_enforce_extra_source = True
