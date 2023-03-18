@@ -12,6 +12,18 @@ sphinxcontrib-video
 .. image:: https://img.shields.io/badge/code_style-prettier-ff69b4.svg
    :target: https://github.com/prettier/prettier
    :alt: prettier badge
+   
+.. image:: https://img.shields.io/readthedocs/sphinxcontrib-video?logo=readthedocs&logoColor=white
+   :alt: Read the Docs
+   :target: https://readthedocs.org/projects/sphinxcontrib-video/
+   
+.. image:: https://img.shields.io/codecov/c/github/sphinx-contrib/video?logo=codecov&logoColor=white
+   :alt: Codecov
+   :target: https://app.codecov.io/gh/sphinx-contrib/video
+   
+.. image:: https://img.shields.io/github/actions/workflow/status/sphinx-contrib/video/unit.yaml?logo=github&logoColor=white
+   :alt: GitHub Workflow Status
+   :target: https://github.com/sphinx-contrib/video/actions/workflows/unit.yaml
 
 The video extension allows you to embed ``.mp4``/``.webm``/``.ogg`` videos as defined by the HTML5 standard. It's a wrapper around the ``<video>`` tag. using a simple directive as:
 
@@ -29,4 +41,4 @@ will be rendered as:
 
 The extension exposes pretty much all parameters from the HTML5 ``<video/>`` tag.
 
-More information about installation and usage in our `documentation <#>`__.
+More information about installation and usage in our `documentation <https://sphinxcontrib-video.readthedocs.io/en/latest/>`__.
