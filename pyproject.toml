@@ -73,3 +73,14 @@ ignore_missing_imports = true
 install_types = true
 non_interactive = true
 warn_redundant_casts = true
+
+[tool.commitizen]
+changelog_incremental = false
+tag_format = "v$major.$minor.$patch$prerelease"
+update_changelog_on_bump = false
+version = "0.0.0"
+version_files = [
+    "pyproject.toml:version",
+    "docs/conf.py:release",
+    "sphinxcontrib/video.py:__version__"
+]

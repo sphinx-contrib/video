@@ -11,6 +11,9 @@ from sphinx.environment import BuildEnvironment
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective, SphinxTranslator
 
+__author__ = "Raphael Massabot"
+__version__ = "0.0.0"
+
 logger = logging.getLogger(__name__)
 
 SUPPORTED_MIME_TYPES: Dict[str, str] = {

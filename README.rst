@@ -5,6 +5,10 @@ sphinxcontrib-video
     :target: https://github.com/sphinx-contrib/video/blob/master/LICENSE
     :alt: License: MIT
 
+.. image:: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
+   :target: https://conventionalcommits.org
+   :alt: conventional commit
+
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://github.com/psf/black
    :alt: Black badge
