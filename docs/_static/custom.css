@@ -9,3 +9,8 @@ div.highlight-console pre span.go::before {
   margin-right: 10px;
   margin-left: 5px;
 }
+
+/* use to demo the class attribute */
+.video-bordered {
+  border: 0.2em solid red;
+}

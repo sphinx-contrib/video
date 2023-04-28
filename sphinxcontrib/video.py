@@ -88,6 +88,7 @@ class Video(SphinxDirective):
         "poster": directives.unchanged,
         "preload": directives.unchanged,
         "width": directives.unchanged,
+        "class": directives.unchanged,
     }
 
     def run(self) -> List[video_node]:
@@ -142,6 +143,7 @@ class Video(SphinxDirective):
                 poster=self.options.get("poster", ""),
                 preload=preload,
                 width=width,
+                klass=self.options.get("class", ""),
             )
         ]
 
@@ -150,6 +152,8 @@ def visit_video_node_html(translator: SphinxTranslator, node: video_node) -> Non
     """Entry point of the html video node."""
     # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
+    if node["klass"]:  # klass need to be special cased
+        attr += [f"class=\"{node['klass']}\""]
     html: str = f"<video {' '.join(attr)}>"
 
     # build the sources
