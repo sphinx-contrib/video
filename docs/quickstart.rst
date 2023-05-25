@@ -56,6 +56,7 @@ the video directive supports all the optional attributes from the html tag as su
     ``:poster:``,``str``, Specifies an image url to be shown while the video is downloading, or until the user hits the play button
     ``:preload:``,``str``,"Specifies if and how the author thinks the video should be loaded when the page loads. Can only be values from ``['auto', 'metadata', 'none']``"
     ``:width:``,``int``, Sets the width of the video player in pixels
+    ``:class:``,``str``, Set extra class to the video html tag
 
 They can be used as any directive option:
 
@@ -71,6 +72,16 @@ They can be used as any directive option:
     :autoplay:
     :muted:
     :loop:
+
+And using the ``:class:`` parameter in combination with custom css, you can change the display of the html ``<video>`` tag:
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :class: video-bordered
+
+.. video:: _static/video.mp4
+    :class: video-bordered
 
 Advanced Usage
 --------------
