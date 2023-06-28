@@ -53,4 +53,4 @@ will be rendered as:
 
 The extension exposes pretty much all parameters from the HTML5 ``<video/>`` tag.
 
-More information about installation and usage in our `documentation <https://sphinxcontrib-video.readthedocs.io/en/latest/>`__.
+More information about installation and usage in our `documentation quickstart <https://sphinxcontrib-video.readthedocs.io/en/latest/quickstart.html>`__.
