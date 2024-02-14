@@ -38,7 +38,7 @@ SUPPORTED_OPTIONS: List[str] = [
 "List of the supported options attributes"
 
 
-def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str]:
+def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str, bool]:
     """Return video and suffix.
 
     Load the video to the static directory if necessary and process the suffix. Raise a warning if not supported but do not stop the computation.
@@ -48,11 +48,8 @@ def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str]:
         env: the build environment
 
     Returns:
-        the src file, the extention suffix
+        The src file, the extension suffix, whether the file is remote
     """
-    if not bool(urlparse(src).netloc):
-        env.images.add_file("", src)
-
     suffix = Path(src).suffix
     if suffix not in SUPPORTED_MIME_TYPES:
         logger.warning(
@@ -60,7 +57,11 @@ def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str]:
         )
     type = SUPPORTED_MIME_TYPES.get(suffix, "")
 
-    return (src, type)
+    is_remote = bool(urlparse(src).netloc)
+    if not is_remote:
+        env.images.add_file("", src)
+
+    return (src, type, is_remote)
 
 
 class video_node(nodes.General, nodes.Element):
@@ -119,12 +120,11 @@ class Video(SphinxDirective):
             preload = "auto"
 
         # add the primary video files as images in the builder
-        primary_src = get_video(self.arguments[0], env)
+        sources = [get_video(self.arguments[0], env)]
 
         # add the secondary video files as images in the builder if necessary
-        secondary_src = None
         if len(self.arguments) == 2:
-            secondary_src = get_video(self.arguments[1], env)
+            sources.append(get_video(self.arguments[1], env))
         elif env.config.video_enforce_extra_source is True:
             logger.warning(
                 f'A secondary source should be provided for "{self.arguments[0]}"'
@@ -132,8 +132,7 @@ class Video(SphinxDirective):
 
         return [
             video_node(
-                primary_src=primary_src,
-                secondary_src=secondary_src,
+                sources=sources,
                 alt=self.options.get("alt", ""),
                 autoplay="autoplay" in self.options,
                 controls="nocontrols" not in self.options,
@@ -158,9 +157,8 @@ def visit_video_node_html(translator: SphinxTranslator, node: video_node) -> Non
 
     # build the sources
     html_source = '<source src="{}" type="{}">'
-    html += html_source.format(*node["primary_src"])
-    if node["secondary_src"] is not None:
-        html += html_source.format(*node["secondary_src"])
+    for src, type_, _ in node["sources"]:
+        html += html_source.format(src, type_)
 
     # add the alternative message
     html += node["alt"]
@@ -176,7 +174,7 @@ def depart_video_node_html(translator: SphinxTranslator, node: video_node) -> No
 def visit_video_node_unsuported(translator: SphinxTranslator, node: video_node) -> None:
     """Entry point of the ignored video node."""
     logger.warning(
-        f"video {node['primary_src']}: unsupported output format (node skipped)"
+        f"video {node['sources'][0][0]}: unsupported output format (node skipped)"
     )
     raise nodes.SkipNode
 
