@@ -1,13 +1,14 @@
 """Video extention to embed video in a html sphinx output."""
 
+import urllib.parse
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
-from urllib.parse import urlparse
 
 from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
+from sphinx.transforms.post_transforms import SphinxPostTransform
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective, SphinxTranslator
 
@@ -57,9 +58,14 @@ def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str, bool]:
         )
     type = SUPPORTED_MIME_TYPES.get(suffix, "")
 
-    is_remote = bool(urlparse(src).netloc)
+    is_remote = bool(urllib.parse.urlparse(src).netloc)
     if not is_remote:
-        env.images.add_file("", src)
+        # Map video paths to unique names (so that they can be put into a single
+        # directory). This copies what is done for images by the process_docs method of
+        # sphinx.environment.collectors.asset.ImageCollector.
+        src, fullpath = env.relfn2path(src, env.docname)
+        env.note_dependency(fullpath)
+        env.images.add_file(env.docname, src)
 
     return (src, type, is_remote)
 
@@ -147,6 +153,34 @@ class Video(SphinxDirective):
         ]
 
 
+class VideoPostTransform(SphinxPostTransform):
+    """Ensure video files are copied to build directory.
+
+    This copies what is done for images in the post_process_image method of
+    sphinx.builders.Builder, except as a Transform since we can't hook into that method
+    directly.
+    """
+
+    default_priority = 200
+
+    def run(self):
+        """Add video files to Builder's image tracking.
+
+        Doing so ensures that the builder copies the files to the output directory.
+        """
+        # TODO: This check can be removed when the minimum supported docutils version
+        # is docutils>=0.18.1.
+        traverse_or_findall = (
+            self.document.findall
+            if hasattr(self.document, "findall")
+            else self.document.traverse
+        )
+        for node in traverse_or_findall(video_node):
+            for src, _, is_remote in node["sources"]:
+                if not is_remote:
+                    self.app.builder.images[src] = self.env.images[src][1]
+
+
 def visit_video_node_html(translator: SphinxTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
     # start the video block
@@ -156,8 +190,15 @@ def visit_video_node_html(translator: SphinxTranslator, node: video_node) -> Non
     html: str = f"<video {' '.join(attr)}>"
 
     # build the sources
+    builder = translator.builder
     html_source = '<source src="{}" type="{}">'
     for src, type_, _ in node["sources"]:
+        # Rewrite the URI if the environment knows about it, as is done for images in the
+        # HTML5 builder, in sphinx.writers.html5.HTML5Translator.visit_image.
+        if src in builder.images:
+            src = Path(
+                builder.imgpath, urllib.parse.quote(builder.images[src])
+            ).as_posix()
         html += html_source.format(src, type_)
 
     # add the alternative message
@@ -192,6 +233,7 @@ def setup(app: Sphinx) -> Dict[str, bool]:
         text=(visit_video_node_unsuported, None),
     )
     app.add_directive("video", Video)
+    app.add_post_transform(VideoPostTransform)
 
     return {
         "parallel_read_safe": True,

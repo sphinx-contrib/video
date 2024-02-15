@@ -1,7 +1,7 @@
 video
 =====
 
-.. video:: _static/video.mp4
+.. video:: videos/video.mp4
     :alt: You cannot display videos
     :autoplay:
     :nocontrols:
