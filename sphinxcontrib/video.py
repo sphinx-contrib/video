@@ -11,6 +11,7 @@ from sphinx.environment import BuildEnvironment
 from sphinx.transforms.post_transforms import SphinxPostTransform
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective, SphinxTranslator
+from sphinx.writers.html import HTMLTranslator
 
 __author__ = "Raphael Massabot"
 __version__ = "0.2.0"
@@ -181,7 +182,7 @@ class VideoPostTransform(SphinxPostTransform):
                     self.app.builder.images[src] = self.env.images[src][1]
 
 
-def visit_video_node_html(translator: SphinxTranslator, node: video_node) -> None:
+def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
     # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
@@ -207,7 +208,7 @@ def visit_video_node_html(translator: SphinxTranslator, node: video_node) -> Non
     translator.body.append(html)
 
 
-def depart_video_node_html(translator: SphinxTranslator, node: video_node) -> None:
+def depart_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Exit of the html video node."""
     translator.body.append("</video>")
 
