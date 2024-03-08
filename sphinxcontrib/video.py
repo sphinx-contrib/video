@@ -1,13 +1,14 @@
 """Video extention to embed video in a html sphinx output."""
 
+import urllib.parse
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
-from urllib.parse import urlparse
 
 from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
+from sphinx.transforms.post_transforms import SphinxPostTransform
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective, SphinxTranslator
 from sphinx.writers.html import HTMLTranslator
@@ -39,7 +40,7 @@ SUPPORTED_OPTIONS: List[str] = [
 "List of the supported options attributes"
 
 
-def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str]:
+def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str, bool]:
     """Return video and suffix.
 
     Load the video to the static directory if necessary and process the suffix. Raise a warning if not supported but do not stop the computation.
@@ -49,11 +50,8 @@ def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str]:
         env: the build environment
 
     Returns:
-        the src file, the extention suffix
+        The src file, the extension suffix, whether the file is remote
     """
-    if not bool(urlparse(src).netloc):
-        env.images.add_file("", src)
-
     suffix = Path(src).suffix
     if suffix not in SUPPORTED_MIME_TYPES:
         logger.warning(
@@ -61,7 +59,16 @@ def get_video(src: str, env: BuildEnvironment) -> Tuple[str, str]:
         )
     type = SUPPORTED_MIME_TYPES.get(suffix, "")
 
-    return (src, type)
+    is_remote = bool(urllib.parse.urlparse(src).netloc)
+    if not is_remote:
+        # Map video paths to unique names (so that they can be put into a single
+        # directory). This copies what is done for images by the process_docs method of
+        # sphinx.environment.collectors.asset.ImageCollector.
+        src, fullpath = env.relfn2path(src, env.docname)
+        env.note_dependency(fullpath)
+        env.images.add_file(env.docname, src)
+
+    return (src, type, is_remote)
 
 
 class video_node(nodes.General, nodes.Element):
@@ -120,12 +127,11 @@ class Video(SphinxDirective):
             preload = "auto"
 
         # add the primary video files as images in the builder
-        primary_src = get_video(self.arguments[0], env)
+        sources = [get_video(self.arguments[0], env)]
 
         # add the secondary video files as images in the builder if necessary
-        secondary_src = None
         if len(self.arguments) == 2:
-            secondary_src = get_video(self.arguments[1], env)
+            sources.append(get_video(self.arguments[1], env))
         elif env.config.video_enforce_extra_source is True:
             logger.warning(
                 f'A secondary source should be provided for "{self.arguments[0]}"'
@@ -133,8 +139,7 @@ class Video(SphinxDirective):
 
         return [
             video_node(
-                primary_src=primary_src,
-                secondary_src=secondary_src,
+                sources=sources,
                 alt=self.options.get("alt", ""),
                 autoplay="autoplay" in self.options,
                 controls="nocontrols" not in self.options,
@@ -149,6 +154,34 @@ class Video(SphinxDirective):
         ]
 
 
+class VideoPostTransform(SphinxPostTransform):
+    """Ensure video files are copied to build directory.
+
+    This copies what is done for images in the post_process_image method of
+    sphinx.builders.Builder, except as a Transform since we can't hook into that method
+    directly.
+    """
+
+    default_priority = 200
+
+    def run(self):
+        """Add video files to Builder's image tracking.
+
+        Doing so ensures that the builder copies the files to the output directory.
+        """
+        # TODO: This check can be removed when the minimum supported docutils version
+        # is docutils>=0.18.1.
+        traverse_or_findall = (
+            self.document.findall
+            if hasattr(self.document, "findall")
+            else self.document.traverse
+        )
+        for node in traverse_or_findall(video_node):
+            for src, _, is_remote in node["sources"]:
+                if not is_remote:
+                    self.app.builder.images[src] = self.env.images[src][1]
+
+
 def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
     # start the video block
@@ -158,10 +191,16 @@ def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     html: str = f"<video {' '.join(attr)}>"
 
     # build the sources
+    builder = translator.builder
     html_source = '<source src="{}" type="{}">'
-    html += html_source.format(*node["primary_src"])
-    if node["secondary_src"] is not None:
-        html += html_source.format(*node["secondary_src"])
+    for src, type_, _ in node["sources"]:
+        # Rewrite the URI if the environment knows about it, as is done for images in the
+        # HTML5 builder, in sphinx.writers.html5.HTML5Translator.visit_image.
+        if src in builder.images:
+            src = Path(
+                builder.imgpath, urllib.parse.quote(builder.images[src])
+            ).as_posix()
+        html += html_source.format(src, type_)
 
     # add the alternative message
     html += node["alt"]
@@ -177,7 +216,7 @@ def depart_video_node_html(translator: HTMLTranslator, node: video_node) -> None
 def visit_video_node_unsuported(translator: SphinxTranslator, node: video_node) -> None:
     """Entry point of the ignored video node."""
     logger.warning(
-        f"video {node['primary_src']}: unsupported output format (node skipped)"
+        f"video {node['sources'][0][0]}: unsupported output format (node skipped)"
     )
     raise nodes.SkipNode
 
@@ -195,6 +234,7 @@ def setup(app: Sphinx) -> Dict[str, bool]:
         text=(visit_video_node_unsuported, None),
     )
     app.add_directive("video", Video)
+    app.add_post_transform(VideoPostTransform)
 
     return {
         "parallel_read_safe": True,
