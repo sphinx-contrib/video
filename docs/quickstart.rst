@@ -57,6 +57,8 @@ the video directive supports all the optional attributes from the html tag as su
     ``:preload:``,``str``,"Specifies if and how the author thinks the video should be loaded when the page loads. Can only be values from ``['auto', 'metadata', 'none']``"
     ``:width:``,``int``, Sets the width of the video player in pixels
     ``:class:``,``str``, Set extra class to the video html tag
+    ``:align:``,``str``, Sets the horizontal alignment ('default', 'left', 'center', 'right')
+    ``:caption:``,``str``, Set the caption text under video
 
 They can be used as any directive option:
 
@@ -82,6 +84,19 @@ And using the ``:class:`` parameter in combination with custom css, you can chan
 
 .. video:: _static/video.mp4
     :class: video-bordered
+
+alignment and caption
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :align: center
+        :caption: The caption text 
+
+.. video:: _static/video.mp4
+    :align: center
+    :caption: The caption text 
+
 
 Advanced Usage
 --------------
