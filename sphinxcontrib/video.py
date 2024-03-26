@@ -189,7 +189,7 @@ class VideoPostTransform(SphinxPostTransform):
 def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
     # align
-    if node["align"] and (node["align"] in ["left", "center", "right", "default"]):
+    if node["align"] and (node["align"] in ["left", "center", "right"]):
         html: str = f"<div class=\"align-{node['align']}\">"
     else:
         html: str = f"<div class=\"align-default\">"
@@ -219,7 +219,7 @@ def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
 
 def depart_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Exit of the html video node."""
-    html_caption=f""
+    html_caption: str = f""
     if node["caption"]:
         html_caption += f"<p><span class=\"caption-text\">{node['caption']}</span></p>"
     translator.body.append(f"</video>{html_caption}</div>")
