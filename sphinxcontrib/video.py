@@ -99,6 +99,7 @@ class Video(SphinxDirective):
         "class": directives.unchanged,
         "align": directives.unchanged,
         "caption": directives.unchanged,
+        "figwidth": directives.unchanged,
     }
 
     def run(self) -> List[video_node]:
@@ -128,6 +129,18 @@ class Video(SphinxDirective):
             )
             preload = "auto"
 
+        align: str = self.options.get("align", "left")
+        if not (align in ["left", "center", "right", "default"]):
+            logger.warning(
+                f'The align type ("{align}") is not a supported. defaulting to "left"'
+            )
+            align = "left"
+
+        caption: str = self.options.get("caption", "")
+        figwidth: str = self.options.get("figwidth", "")
+        if not caption:
+            figwidth = ""
+
         # add the primary video files as images in the builder
         sources = [get_video(self.arguments[0], env)]
 
@@ -152,8 +165,9 @@ class Video(SphinxDirective):
                 preload=preload,
                 width=width,
                 klass=self.options.get("class", ""),
-                align=self.options.get("align", "left"),
-                caption=self.options.get("caption", ""),
+                align=align,
+                caption=caption,
+                figwidth=figwidth,
             )
         ]
 
@@ -188,15 +202,19 @@ class VideoPostTransform(SphinxPostTransform):
 
 def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
-    # align
     html: str = ""
-    if (node["align"] in ["left", "center", "right", "default"]):
-        html += f'<div class="align-{node["align"]}">'
+    # has caption?
+    if node["caption"]:
+        html += '<figure '
     else:
-        html += f'<div class="align-default">'
-        logger.warning(
-            f'The align type ("{node["align"]}") is not a supported. defaulting to "default"'
-        )
+        html += '<div '
+    # align
+    html += f' class="align-{node["align"]}"'
+    # figwidth
+    if node["figwidth"]:
+        html += f' style="width: {node["figwidth"]}"><div class="align-center">'
+    else:
+        html += '>'
     # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
     if node["klass"]:  # klass need to be special cased
@@ -224,9 +242,16 @@ def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
 def depart_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Exit of the html video node."""
     html_caption: str = ""
+    if node["figwidth"]:
+        html_caption += "</div>"
     if node["caption"]:
-        html_caption += f'<p><span class="caption-text">{node["caption"]}</span></p>'
-    translator.body.append(f"</video>{html_caption}</div>")
+        html_caption += ('<figcaption class="align-center">'
+                         '<p style="text-align: left; display:inline-block">'
+                         f'<span class="caption-text">{node["caption"]}</span>'
+                         '</p></figcaption></figure>')
+    else:
+       html_caption += '</div>'
+    translator.body.append(f"</video>{html_caption}")
 
 
 def visit_video_node_unsuported(translator: SphinxTranslator, node: video_node) -> None:

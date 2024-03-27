@@ -51,14 +51,15 @@ the video directive supports all the optional attributes from the html tag as su
     ``:autoplay:``,,Specifies that the video will start playing as soon as it is ready
     ``:nocontrols:``,,Specifies that video controls should not be displayed (such as a play/pause button etc).
     ``:height:``,``int``,Sets the height of the video player in pixels
-    ``:loop:``,,Specifies that the video will start over again, every time it is finished
+    ``:loop:``,,"Specifies that the video will start over again, every time it is finished"
     ``:muted:``,,Specifies that the audio output of the video should be muted
-    ``:poster:``,``str``, Specifies an image url to be shown while the video is downloading, or until the user hits the play button
+    ``:poster:``,``str``, "Specifies an image url to be shown while the video is downloading, or until the user hits the play button"
     ``:preload:``,``str``,"Specifies if and how the author thinks the video should be loaded when the page loads. Can only be values from ``['auto', 'metadata', 'none']``"
     ``:width:``,``int``, Sets the width of the video player in pixels
     ``:class:``,``str``, Set extra class to the video html tag
-    ``:align:``,``str``, Sets the horizontal alignment ('default', 'left', 'center', 'right')
+    ``:align:``,``str``, "Sets the horizontal alignment. Can only be values from ``['default', 'left', 'center', 'right']``"
     ``:caption:``,``str``, Set the caption text under video
+    ``:figwidth:``,``str``, Set the maximum width of caption text. It is defined as the same of 'figwidth' `in figure <https://docutils.sourceforge.io/docs/ref/rst/directives.html#figure>`_. It will be disabled when 'caption' is not set.
 
 They can be used as any directive option:
 
@@ -122,7 +123,7 @@ If you want to use the 'default' defined by theme, you need to, manually, set it
 .. video:: _static/video.mp4
     :align: default
 
- Caption:
+Caption:
 
 .. code-block:: rst
 
@@ -133,6 +134,80 @@ If you want to use the 'default' defined by theme, you need to, manually, set it
 .. video:: _static/video.mp4
     :align: center
     :caption: The caption text
+
+Use figwidth to set the maximum width of the caption text if the video is narrow:
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :width: 300
+        :figwidth: 60%
+        :align: center
+        :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
+.. video:: _static/video.mp4
+    :width: 300
+    :figwidth: 60%
+    :align: center
+    :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
+The width of video is not controlled by 'figwidth', you need to use 'width' to control it. For example, if you don't set the 'width', you may have the following problem.
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :figwidth: 60%
+        :align: center
+        :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
+.. video:: _static/video.mp4
+    :figwidth: 60%
+    :align: center
+    :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
+When 'caption' is set, and 'align' is 'left' or 'right', the video will be float to text in some themes.
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :width: 400
+        :figwidth: 60%
+        :align: left
+        :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+    long long text...
+
+.. video:: _static/video.mp4
+    :width: 400
+    :figwidth: 60%
+    :align: left
+    :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :width: 400
+        :figwidth: 60%
+        :align: right
+        :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+    long long text...
+
+.. video:: _static/video.mp4
+    :width: 400
+    :figwidth: 60%
+    :align: right
+    :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
 
 
 Advanced Usage
