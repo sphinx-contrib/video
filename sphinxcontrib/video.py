@@ -152,7 +152,7 @@ class Video(SphinxDirective):
                 preload=preload,
                 width=width,
                 klass=self.options.get("class", ""),
-                align=self.options.get("align", ""),
+                align=self.options.get("align", "left"),
                 caption=self.options.get("caption", ""),
             )
         ]
@@ -189,10 +189,7 @@ class VideoPostTransform(SphinxPostTransform):
 def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
     # align
-    if node["align"] and (node["align"] in ["left", "center", "right"]):
-        html: str = f"<div class=\"align-{node['align']}\">"
-    else:
-        html: str = f"<div class=\"align-default\">"
+    html: str = f'<div class="align-{node["align"]}">'
     # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
     if node["klass"]:  # klass need to be special cased
@@ -219,9 +216,9 @@ def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
 
 def depart_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Exit of the html video node."""
-    html_caption: str = f""
+    html_caption: str = ""
     if node["caption"]:
-        html_caption += f"<p><span class=\"caption-text\">{node['caption']}</span></p>"
+        html_caption += f'<p><span class="caption-text">{node["caption"]}</span></p>'
     translator.body.append(f"</video>{html_caption}</div>")
 
 

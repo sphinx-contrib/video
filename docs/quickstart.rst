@@ -85,17 +85,54 @@ And using the ``:class:`` parameter in combination with custom css, you can chan
 .. video:: _static/video.mp4
     :class: video-bordered
 
-alignment and caption
+Alignment: 
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :align: left
+
+.. video:: _static/video.mp4
+    :align: left
 
 .. code-block:: rst
 
     .. video:: _static/video.mp4
         :align: center
-        :caption: The caption text 
 
 .. video:: _static/video.mp4
     :align: center
-    :caption: The caption text 
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :align: right
+
+.. video:: _static/video.mp4
+    :align: right
+
+For consistency with previous versions, which not support align, the default value of align 'left' when the it is not set.
+If you want to use the 'default' defined by theme, you need to, manually, set it to 'default':
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :align: default
+
+.. video:: _static/video.mp4
+    :align: default
+
+ Caption:
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :align: center
+        :caption: The caption text
+
+.. video:: _static/video.mp4
+    :align: center
+    :caption: The caption text
 
 
 Advanced Usage
