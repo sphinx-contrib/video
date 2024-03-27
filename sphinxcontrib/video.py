@@ -189,7 +189,14 @@ class VideoPostTransform(SphinxPostTransform):
 def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
     # align
-    html: str = f'<div class="align-{node["align"]}">'
+    html: str = ""
+    if (node["align"] in ["left", "center", "right", "default"]):
+        html += f'<div class="align-{node["align"]}">'
+    else:
+        html += f'<div class="align-default">'
+        logger.warning(
+            f'The align type ("{node["align"]}") is not a supported. defaulting to "default"'
+        )
     # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
     if node["klass"]:  # klass need to be special cased
