@@ -173,28 +173,29 @@ When the 'width' is set to a percentage, the percent number indicates the relati
         :width: 100%
         :figwidth: 60%
         :align: center
-        :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+        :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
 
 .. video:: _static/video.mp4
     :width: 100%
     :figwidth: 60%
     :align: center
-    :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+    :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
 
 When 'caption' is set, and 'align' is 'left' or 'right', the video will be float to text in some themes.
 
 .. code-block:: rst
 
     .. video:: _static/video.mp4
-        :width: 100%
-        :figwidth: 60%
+        :width: 95%
+        :figwidth: 65%
         :align: left
         :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
     long long text...
 
 .. video:: _static/video.mp4
-    :width: 100%
-    :figwidth: 60%
+    :width: 95%
+    :figwidth: 65%
     :align: left
     :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
 
@@ -204,22 +205,31 @@ long long text long long text long long text long long text long long text long 
 long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
 
 .. code-block:: rst
 
     .. video:: _static/video.mp4
-        :width: 100%
-        :figwidth: 60%
+        :width: 95%
+        :figwidth: 65%
         :align: right
         :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
     long long text...
 
 .. video:: _static/video.mp4
-    :width: 100%
-    :figwidth: 60%
+    :width: 95%
+    :figwidth: 65%
     :align: right
     :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
 
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
+long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text
