@@ -97,6 +97,9 @@ class Video(SphinxDirective):
         "preload": directives.unchanged,
         "width": directives.unchanged,
         "class": directives.unchanged,
+        "align": directives.unchanged,
+        "caption": directives.unchanged,
+        "figwidth": directives.unchanged,
     }
 
     def run(self) -> List[video_node]:
@@ -112,7 +115,7 @@ class Video(SphinxDirective):
             height = ""
 
         width: str = self.options.get("width", "")
-        if width and not width.isdigit():
+        if width and not (width.isdigit() or str_is_percentage(width)):
             logger.warning(
                 f'The provided width ("{width}") is ignored as it\'s not an integer'
             )
@@ -125,6 +128,18 @@ class Video(SphinxDirective):
                 f'The provided preload ("{preload}") is not an accepted value. defaulting to "auto"'
             )
             preload = "auto"
+
+        align: str = self.options.get("align", "left")
+        if not (align in ["left", "center", "right", "default"]):
+            logger.warning(
+                f'The align type ("{align}") is not a supported. defaulting to "left"'
+            )
+            align = "left"
+
+        caption: str = self.options.get("caption", "")
+        figwidth: str = self.options.get("figwidth", "")
+        if not caption:
+            figwidth = ""
 
         # add the primary video files as images in the builder
         sources = [get_video(self.arguments[0], env)]
@@ -150,8 +165,23 @@ class Video(SphinxDirective):
                 preload=preload,
                 width=width,
                 klass=self.options.get("class", ""),
+                align=align,
+                caption=caption,
+                figwidth=figwidth,
             )
         ]
+
+
+def str_is_percentage(string: str) -> bool:
+    return string[-1] == "%" and str_is_float(string[0:-1])
+
+
+def str_is_float(string: str) -> bool:
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False
 
 
 class VideoPostTransform(SphinxPostTransform):
@@ -184,11 +214,24 @@ class VideoPostTransform(SphinxPostTransform):
 
 def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Entry point of the html video node."""
+    html: str = ""
+    # has caption?
+    if node["caption"]:
+        html += '<figure '
+    else:
+        html += '<div '
+    # align
+    html += f' class="align-{node["align"]}"'
+    # figwidth
+    if node["figwidth"]:
+        html += f' style="width: {node["figwidth"]}"><div class="align-center">'
+    else:
+        html += '>'
     # start the video block
     attr: List[str] = [f'{k}="{node[k]}"' for k in SUPPORTED_OPTIONS if node[k]]
     if node["klass"]:  # klass need to be special cased
         attr += [f"class=\"{node['klass']}\""]
-    html: str = f"<video {' '.join(attr)}>"
+    html += f"<video {' '.join(attr)}>"
 
     # build the sources
     builder = translator.builder
@@ -210,7 +253,17 @@ def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
 
 def depart_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     """Exit of the html video node."""
-    translator.body.append("</video>")
+    html_caption: str = ""
+    if node["figwidth"]:
+        html_caption += "</div>"
+    if node["caption"]:
+        html_caption += ('<figcaption class="align-center">'
+                         '<p style="text-align: left; display:inline-block">'
+                         f'<span class="caption-text">{node["caption"]}</span>'
+                         '</p></figcaption></figure>')
+    else:
+       html_caption += '</div>'
+    translator.body.append(f"</video>{html_caption}")
 
 
 def visit_video_node_unsuported(translator: SphinxTranslator, node: video_node) -> None:
