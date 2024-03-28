@@ -55,7 +55,7 @@ the video directive supports all the optional attributes from the html tag as su
     ``:muted:``,,Specifies that the audio output of the video should be muted
     ``:poster:``,``str``, "Specifies an image url to be shown while the video is downloading, or until the user hits the play button"
     ``:preload:``,``str``,"Specifies if and how the author thinks the video should be loaded when the page loads. Can only be values from ``['auto', 'metadata', 'none']``"
-    ``:width:``,``int``, Sets the width of the video player in pixels
+    ``:width:``,``int``, Sets the width of the video player in pixels or percentage
     ``:class:``,``str``, Set extra class to the video html tag
     ``:align:``,``str``, "Sets the horizontal alignment. Can only be values from ``['default', 'left', 'center', 'right']``"
     ``:caption:``,``str``, Set the caption text under video
@@ -151,7 +151,7 @@ Use figwidth to set the maximum width of the caption text if the video is narrow
     :align: center
     :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
 
-The width of video is not controlled by 'figwidth', you need to use 'width' to control it. For example, if you don't set the 'width', you may have the following problem.
+The width of video is not controlled by 'figwidth', you need to use 'width' to control it. For example, if you don't set the 'width', the following problems may occur: The video with is greater than 'figwith', resulting in results that are not aligned as expected.
 
 .. code-block:: rst
 
@@ -165,22 +165,39 @@ The width of video is not controlled by 'figwidth', you need to use 'width' to c
     :align: center
     :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
 
+When the 'width' is set to a percentage, the percent number indicates the relative to 'figwidth':
+
+.. code-block:: rst
+
+    .. video:: _static/video.mp4
+        :width: 100%
+        :figwidth: 60%
+        :align: center
+        :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
+.. video:: _static/video.mp4
+    :width: 100%
+    :figwidth: 60%
+    :align: center
+    :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
 When 'caption' is set, and 'align' is 'left' or 'right', the video will be float to text in some themes.
 
 .. code-block:: rst
 
     .. video:: _static/video.mp4
-        :width: 400
+        :width: 100%
         :figwidth: 60%
         :align: left
         :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
     long long text...
 
 .. video:: _static/video.mp4
-    :width: 400
+    :width: 100%
     :figwidth: 60%
     :align: left
     :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
 long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text
@@ -191,17 +208,18 @@ long long text long long text long long text long long text long long text long 
 .. code-block:: rst
 
     .. video:: _static/video.mp4
-        :width: 400
+        :width: 100%
         :figwidth: 60%
         :align: right
         :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
     long long text...
 
 .. video:: _static/video.mp4
-    :width: 400
+    :width: 100%
     :figwidth: 60%
     :align: right
     :caption: The caption text text xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx
+
 long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text
 long long text long long text long long text long long text long long text long long text long long text

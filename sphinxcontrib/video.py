@@ -115,7 +115,7 @@ class Video(SphinxDirective):
             height = ""
 
         width: str = self.options.get("width", "")
-        if width and not width.isdigit():
+        if width and not (width.isdigit() or str_is_percentage(width)):
             logger.warning(
                 f'The provided width ("{width}") is ignored as it\'s not an integer'
             )
@@ -170,6 +170,18 @@ class Video(SphinxDirective):
                 figwidth=figwidth,
             )
         ]
+
+
+def str_is_percentage(string: str) -> bool:
+    return string[-1] == "%" and str_is_float(string[0:-1])
+
+
+def str_is_float(string: str) -> bool:
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False
 
 
 class VideoPostTransform(SphinxPostTransform):
