@@ -40,9 +40,22 @@ content-type = "text/x-rst"
 repository = "https://github.com/sphinx-contrib/video"
 
 [project.optional-dependencies]
-dev = ["nox", "pre-commit", "mypy"]
-test = ["pytest", "beautifulsoup4", "pytest-regressions", "pytest-cov"]
-doc = ["pydata-sphinx-theme==0.13.0rc3","sphinx-design"]
+dev = [
+    "nox",
+    "pre-commit",
+    "mypy",
+]
+test = [
+    "pytest",
+    "beautifulsoup4",
+    "pytest-regressions",
+    "pytest-cov",
+    "defusedxml",
+]
+doc = [
+    "pydata-sphinx-theme",
+    "sphinx-design",
+]
 
 [tool.setuptools]
 include-package-data = false
