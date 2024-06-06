@@ -14,7 +14,7 @@ from sphinx.util.docutils import SphinxDirective, SphinxTranslator
 from sphinx.writers.html import HTMLTranslator
 
 __author__ = "Raphael Massabot"
-__version__ = "0.2.1rc0"
+__version__ = "0.2.1"
 
 logger = logging.getLogger(__name__)
 
