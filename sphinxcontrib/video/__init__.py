@@ -2,7 +2,7 @@
 
 import urllib.parse
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
 from docutils import nodes
 from docutils.parsers.rst import directives
@@ -83,10 +83,10 @@ class Video(SphinxDirective):
     Wrapper for the html <video> tag embeding all the supported options
     """
 
-    has_content: bool = True
-    required_arguments: int = 1
-    optional_arguments: int = 1
-    option_spec: Dict[str, Any] = {
+    has_content = True
+    required_arguments = 1
+    optional_arguments = 1
+    option_spec = {
         "alt": directives.unchanged,
         "autoplay": directives.flag,
         "nocontrols": directives.flag,
