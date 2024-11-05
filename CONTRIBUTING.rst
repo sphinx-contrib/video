@@ -1,9 +1,9 @@
 Contribute
 ==========
 
-Thank you for your help improving **Sphinx Favicon**!
+Thank you for your help improving **Sphinx Video**!
 
-**Sphinx Favicon** uses `nox <https://nox.thea.codes/en/stable/>`__ to automate several development-related tasks.
+**Sphinx Video** uses `nox <https://nox.thea.codes/en/stable/>`__ to automate several development-related tasks.
 Currently, the project uses four automation processes (called sessions) in ``noxfile.py``:
 
 -   ``mypy``: to perform a mypy check on the lib;
