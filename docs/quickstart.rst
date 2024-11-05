@@ -57,6 +57,7 @@ the video directive supports all the optional attributes from the html tag as su
     ``:preload:``,``str``,"Specifies if and how the author thinks the video should be loaded when the page loads. Can only be values from ``['auto', 'metadata', 'none']``"
     ``:width:``,``int``, Sets the width of the video player in pixels
     ``:class:``,``str``, Set extra class to the video html tag
+    ``:playsinline:``,,Specifies that the video will play in-line (instead of full-screen) on small devices.
 
 They can be used as any directive option:
 
@@ -64,14 +65,19 @@ They can be used as any directive option:
 
     .. video:: _static/video.mp4
         :nocontrols:
+        :autoplay:
+        :playsinline:
+        :muted:
         :loop:
         :poster: _static/image.png
 
 .. video:: _static/video.mp4
     :nocontrols:
     :autoplay:
+    :playsinline:
     :muted:
     :loop:
+    :poster: _static/image.png
 
 And using the ``:class:`` parameter in combination with custom css, you can change the display of the html ``<video>`` tag:
 
