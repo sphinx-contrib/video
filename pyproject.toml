@@ -60,7 +60,7 @@ doc = [
 [tool.setuptools]
 include-package-data = false
 license-files = ["LICENSE"]
-packages = ["sphinxcontrib"]
+packages = ["sphinxcontrib.video"]
 
 [tool.ruff]
 ignore-init-module-imports = true
