@@ -105,19 +105,29 @@ class Video(SphinxDirective):
         env: BuildEnvironment = self.env
 
         # check options that need to be specific values
-        height: str = self.options.get("height", "")
-        if height and not height.isdigit():
-            logger.warning(
-                f'The provided height ("{height}") is ignored as it\'s not an integer'
-            )
-            height = ""
 
         width: str = self.options.get("width", "")
-        if width and not width.isdigit():
+        if width and not (width.isdigit() or width[-1] == "%" and width[:-1].isdigit()):
             logger.warning(
-                f'The provided width ("{width}") is ignored as it\'s not an integer'
+                f'The provided width ("{width}") is ignored as it\'s not an integer '
+                "or integer percentage"
             )
             width = ""
+
+        height: str = self.options.get("height", "")
+        if height:
+            if width.endswith("%"):
+                logger.warning(
+                    f'The provided height ("{height}") is ignored as the provided '
+                    f'width ("{width}") is relative'
+                )
+                height = ""
+            elif not height.isdigit():
+                logger.warning(
+                    f'The provided height ("{height}") is ignored as it\'s not an '
+                    "integer"
+                )
+                height = ""
 
         preload: str = self.options.get("preload", "auto")
         valid_preload = ["auto", "metadata", "none"]

@@ -50,12 +50,12 @@ the video directive supports all the optional attributes from the html tag as su
     ``:alt:``,``str``,Specify the text to write when the video cannot be displayed
     ``:autoplay:``,,Specifies that the video will start playing as soon as it is ready
     ``:nocontrols:``,,Specifies that video controls should not be displayed (such as a play/pause button etc).
-    ``:height:``,``int``,Sets the height of the video player in pixels
+    ``:height:``,``int``,Sets the height of the video player in pixels (ignored if relative width is used)
     ``:loop:``,,Specifies that the video will start over again, every time it is finished
     ``:muted:``,,Specifies that the audio output of the video should be muted
     ``:poster:``,``str``, Specifies an image url to be shown while the video is downloading, or until the user hits the play button
     ``:preload:``,``str``,"Specifies if and how the author thinks the video should be loaded when the page loads. Can only be values from ``['auto', 'metadata', 'none']``"
-    ``:width:``,``int``, Sets the width of the video player in pixels
+    ``:width:``,``int``\ [``%``\ ], Sets the width of the video player in pixels or relative to the page's width if a percentage
     ``:class:``,``str``, Set extra class to the video html tag
     ``:playsinline:``,,Specifies that the video will play in-line (instead of full-screen) on small devices.
 
@@ -70,6 +70,7 @@ They can be used as any directive option:
         :muted:
         :loop:
         :poster: _static/image.png
+        :width: 100%
 
 .. video:: _static/video.mp4
     :nocontrols:
@@ -77,6 +78,7 @@ They can be used as any directive option:
     :playsinline:
     :muted:
     :loop:
+    :width: 100%
     :poster: _static/image.png
 
 And using the ``:class:`` parameter in combination with custom css, you can change the display of the html ``<video>`` tag:
