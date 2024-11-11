@@ -97,6 +97,7 @@ class Video(SphinxDirective):
         "preload": directives.unchanged,
         "width": directives.unchanged,
         "class": directives.unchanged,
+        "playsinline": directives.flag,
     }
 
     def run(self) -> List[video_node]:
@@ -160,6 +161,7 @@ class Video(SphinxDirective):
                 preload=preload,
                 width=width,
                 klass=self.options.get("class", ""),
+                playsinline="playsinline" in self.options,
             )
         ]
 
