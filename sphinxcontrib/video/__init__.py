@@ -36,6 +36,7 @@ SUPPORTED_OPTIONS: List[str] = [
     "poster",
     "preload",
     "width",
+    "playsinline",
 ]
 "List of the supported options attributes"
 
