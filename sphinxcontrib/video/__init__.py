@@ -1,4 +1,4 @@
-"""Video extention to embed video in a html sphinx output."""
+"""Video extension to embed video in a html sphinx output."""
 
 import urllib.parse
 from pathlib import Path
