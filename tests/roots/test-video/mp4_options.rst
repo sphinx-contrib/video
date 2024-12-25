@@ -11,3 +11,4 @@ video
     :poster: https://example.png
     :preload: none
     :width: 640
+    :playsinline:
