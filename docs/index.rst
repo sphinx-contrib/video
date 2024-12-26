@@ -29,11 +29,11 @@ The documentation contains 2 sections:
       .. card:: Quickstart
          :link: quickstart.html
 
-         Lib instalation and usage of the video directive
+         Lib installation and usage of the video directive
 
    .. grid-item::
 
       .. card:: Contribute
          :link: contribute.html
 
-         Help us improve the Sphinx extention.
+         Help us improve the Sphinx extension.
