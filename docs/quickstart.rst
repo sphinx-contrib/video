@@ -112,8 +112,8 @@ Alignment:
 .. video:: _static/video.mp4
     :align: right
 
-For consistency with previous versions, which not support align, the default value of align 'left' when the it is not set.
-If you want to use the 'default' defined by theme, you need to, manually, set it to 'default':
+For consistency with previous versions, which not support align, the default value of align is set to `left` when nothing is set.
+If you want to use the alignment defined by your theme, you need to, manually, set it to `default`:
 
 .. code-block:: rst
 
