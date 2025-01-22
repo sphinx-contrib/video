@@ -5,6 +5,7 @@ video
     :alt: You cannot display videos
     :autoplay:
     :nocontrols:
+    :controlslist: nodownload nofullscreen noremoteplayback
     :height: 320
     :loop:
     :muted:

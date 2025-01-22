@@ -50,6 +50,7 @@ the video directive supports all the optional attributes from the html tag as su
     ``:alt:``,``str``,Specify the text to write when the video cannot be displayed
     ``:autoplay:``,,Specifies that the video will start playing as soon as it is ready
     ``:nocontrols:``,,Specifies that video controls should not be displayed (such as a play/pause button etc).
+    ``:controlslist:``,``str``, "Specifies the controls to show on the media element. Can only be one or more of values from ``['nodownload', 'nofullscreen', 'noremoteplayback']``"
     ``:height:``,``int``,Sets the height of the video player in pixels (ignored if relative width is used)
     ``:loop:``,,"Specifies that the video will start over again, every time it is finished"
     ``:muted:``,,Specifies that the audio output of the video should be muted

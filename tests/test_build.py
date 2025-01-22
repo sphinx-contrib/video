@@ -89,6 +89,18 @@ def test_wrong_preload(app, status, warning, file_regression):
     file_regression.check(video, basename="video_no_options", extension=".html")
 
 
+@pytest.mark.sphinx(testroot="video-warnings")
+def test_wrong_controlslist(app, status, warning, file_regression):
+    """Build a video with badly designed option and check it's ignored."""
+    app.builder.build_all()
+
+    # test the video is still existing
+    html = (app.outdir / "wrong_controlslist.html").read_text(encoding="utf8")
+    html = BeautifulSoup(html, "html.parser")
+    video = html.select("video")[0].prettify(formatter=fmt)
+    file_regression.check(video, basename="video_no_options", extension=".html")
+
+
 @pytest.mark.sphinx(testroot="video-secondary")
 def test_video_force_secondary(app, status, warning, file_regression):
     """Build a latex output (unsuported)."""
