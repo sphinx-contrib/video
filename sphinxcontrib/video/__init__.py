@@ -143,15 +143,11 @@ class Video(SphinxDirective):
             )
             preload = "auto"
 
-        controlslist: str = self.options.get("controlslist", "")
-        valid_controlslist_tokens = ["nodownload", "nofullscreen", "noremoteplayback", ""]
-        valid_controlslist = " ".join([token for token in controlslist.split() if token in valid_controlslist_tokens])
-        if controlslist != valid_controlslist:
-            logger.warning(
-                f'The provided controlslist ("{controlslist}") is not an accepted value. defaulting to "{valid_controlslist}"'
-            )
-            controlslist = valid_controlslist
-
+        controlslist: str = self.options.get("controlslist", "").split(",")
+        valid_token = ["nodownload", "nofullscreen", "noremoteplayback"]
+        if not set(control_list).issubset(valid_token):
+            raise ValueError(f"The controlslist can only contains value from: {valid_token})
+            
         align: str = self.options.get("align", "left")
         if align not in ["left", "center", "right", "default"]:
             logger.warning(
