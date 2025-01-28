@@ -8,7 +8,7 @@ fmt = formatter.HTMLFormatter(indent=2, void_element_close_prefix=" /")
 
 @pytest.mark.sphinx("latex", testroot="video")
 def test_video_latex(app, status, warning, file_regression):
-    """Build a latex output (unsuported)."""
+    """Build a latex output (unsupported)."""
     app.builder.build_all()
 
     assert "unsupported output format (node skipped)" in warning.getvalue()
@@ -17,7 +17,7 @@ def test_video_latex(app, status, warning, file_regression):
 @pytest.mark.sphinx(testroot="video")
 def test_video(app, status, warning, file_regression):
     """Build a video without options."""
-    app.builder.build_all()
+    app.builder.build_specific([app.srcdir / "mp4.rst"])
 
     html = (app.outdir / "mp4.html").read_text(encoding="utf8")
     html = BeautifulSoup(html, "html.parser")
@@ -28,7 +28,7 @@ def test_video(app, status, warning, file_regression):
 @pytest.mark.sphinx(testroot="video")
 def test_video_options(app, status, warning, file_regression):
     """Build a video without all options activated."""
-    app.builder.build_all()
+    app.builder.build_specific([app.srcdir / "mp4_options.rst"])
 
     html = (app.outdir / "mp4_options.html").read_text(encoding="utf8")
     html = BeautifulSoup(html, "html.parser")
@@ -39,7 +39,7 @@ def test_video_options(app, status, warning, file_regression):
 @pytest.mark.sphinx(testroot="video-warnings")
 def test_wrong_format(app, status, warning, file_regression):
     """Build a video with  a non supported format and check the error message."""
-    app.builder.build_all()
+    app.builder.build_specific([app.srcdir / "wrong_format.rst"])
 
     assert (
         'The provided file type (".mkv") is not a supported format. defaulting to ""'
@@ -56,7 +56,7 @@ def test_wrong_format(app, status, warning, file_regression):
 @pytest.mark.sphinx(testroot="video-warnings")
 def test_wrong_height(app, status, warning, file_regression):
     """Build a video with badly designed option and check it's ignored."""
-    app.builder.build_all()
+    app.builder.build_specific([app.srcdir / "wrong_height.rst"])
 
     # test the video is still existing
     html = (app.outdir / "wrong_height.html").read_text(encoding="utf8")
@@ -68,7 +68,7 @@ def test_wrong_height(app, status, warning, file_regression):
 @pytest.mark.sphinx(testroot="video-warnings")
 def test_wrong_width(app, status, warning, file_regression):
     """Build a video with badly designed option and check it's ignored."""
-    app.builder.build_all()
+    app.builder.build_specific([app.srcdir / "wrong_width.rst"])
 
     # test the video is still existing
     html = (app.outdir / "wrong_width.html").read_text(encoding="utf8")
@@ -80,7 +80,7 @@ def test_wrong_width(app, status, warning, file_regression):
 @pytest.mark.sphinx(testroot="video-warnings")
 def test_wrong_preload(app, status, warning, file_regression):
     """Build a video with badly designed option and check it's ignored."""
-    app.builder.build_all()
+    app.builder.build_specific([app.srcdir / "wrong_preload.rst"])
 
     # test the video is still existing
     html = (app.outdir / "wrong_preload.html").read_text(encoding="utf8")
@@ -92,7 +92,7 @@ def test_wrong_preload(app, status, warning, file_regression):
 @pytest.mark.sphinx(testroot="video-warnings")
 def test_wrong_controlslist(app, status, warning, file_regression):
     """Build a video with badly designed option and check it's ignored."""
-    app.builder.build_all()
+    app.builder.build_specific([app.srcdir / "wrong_controlslist.rst"])
 
     # test the video is still existing
     html = (app.outdir / "wrong_controlslist.html").read_text(encoding="utf8")
@@ -104,7 +104,7 @@ def test_wrong_controlslist(app, status, warning, file_regression):
 @pytest.mark.sphinx(testroot="video-secondary")
 def test_video_force_secondary(app, status, warning, file_regression):
     """Build a latex output (unsuported)."""
-    app.builder.build_all()
+    app.builder.build_specific([app.srcdir / "mp4_secondary.rst"])
 
     assert (
         'A secondary source should be provided for "_static/video.mp4"'
