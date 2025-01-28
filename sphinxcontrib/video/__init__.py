@@ -147,7 +147,6 @@ class Video(SphinxDirective):
         if controlslist:
             controlslist = controlslist.split(",")
             valid_token = ["nodownload", "nofullscreen", "noremoteplayback"]
-            print(controlslist)
             if not set(controlslist).issubset(valid_token):
                 logger.warning(
                     f"The controlslist can only contains value from: {valid_token}"
