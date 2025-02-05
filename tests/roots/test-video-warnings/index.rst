@@ -6,3 +6,4 @@ video
     wrong_height
     wrong_width
     wrong_preload
+    wrong_controlslist

@@ -37,6 +37,7 @@ SUPPORTED_OPTIONS: List[str] = [
     "preload",
     "width",
     "playsinline",
+    "controlslist",
 ]
 "List of the supported options attributes"
 
@@ -91,6 +92,7 @@ class Video(SphinxDirective):
         "alt": directives.unchanged,
         "autoplay": directives.flag,
         "nocontrols": directives.flag,
+        "controlslist": directives.unchanged,
         "height": directives.unchanged,
         "loop": directives.flag,
         "muted": directives.flag,
@@ -141,6 +143,17 @@ class Video(SphinxDirective):
             )
             preload = "auto"
 
+        controlslist: str = self.options.get("controlslist", "")
+        if controlslist:
+            controlslist_set = set(controlslist.split(","))
+            valid_token = ["nodownload", "nofullscreen", "noremoteplayback"]
+            if not controlslist_set.issubset(valid_token):
+                logger.warning(
+                    f"The controlslist can only contains value from: {valid_token}"
+                )
+                controlslist_set = set()
+            controlslist = " ".join(controlslist_set)
+
         align: str = self.options.get("align", "left")
         if align not in ["left", "center", "right", "default"]:
             logger.warning(
@@ -170,6 +183,7 @@ class Video(SphinxDirective):
                 alt=self.options.get("alt", ""),
                 autoplay="autoplay" in self.options,
                 controls="nocontrols" not in self.options,
+                controlslist=controlslist,
                 height=height,
                 loop="loop" in self.options,
                 muted="muted" in self.options,
