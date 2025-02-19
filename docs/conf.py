@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = "sphinxcontrib-video"
 author = "Raphael Massabot"
 copyright = f"2018-{datetime.now().year}, {author}"
-release = "0.4.0"
+release = "0.4.1"
 
 # -- General configuration -----------------------------------------------------
 
