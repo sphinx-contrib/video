@@ -250,7 +250,7 @@ def visit_video_node_html(translator: HTMLTranslator, node: video_node) -> None:
     else:
         html += "<div "
     # align
-    html += f' class="align-{node["align"]}"'
+    html += f' class="sphinx-contrib-video-container align-{node["align"]}"'
     # figwidth
     if node["figwidth"]:
         html += f' style="width: {node["figwidth"]}"><div class="align-center">'
