@@ -145,7 +145,7 @@ class Video(SphinxDirective):
 
         controlslist: str = self.options.get("controlslist", "")
         if controlslist:
-            controlslist_set = set(controlslist.split(","))
+            controlslist_set = set(sorted(controlslist.split(",")))
             valid_token = ["nodownload", "nofullscreen", "noremoteplayback"]
             if not controlslist_set.issubset(valid_token):
                 logger.warning(

@@ -1,7 +1,11 @@
 """Test sphinxcontrib.video extension."""
 
+from logging import Logger
+
 import pytest
 from bs4 import BeautifulSoup, formatter
+
+logger = Logger("sphinxcontrib.video.tests.test_build")
 
 fmt = formatter.HTMLFormatter(indent=2, void_element_close_prefix=" /")
 
@@ -31,8 +35,11 @@ def test_video_options(app, status, warning, file_regression):
     app.builder.build_specific([app.srcdir / "mp4_options.rst"])
 
     html = (app.outdir / "mp4_options.html").read_text(encoding="utf8")
+    print(html)
     html = BeautifulSoup(html, "html.parser")
-    video = html.select("video")[0].prettify(formatter=fmt)
+    video = html.select("video")[0]
+    video.attrs["controlslist"] = " ".join(sorted(video.attrs["controlslist"].split()))
+    video = video.prettify(formatter=fmt)
     file_regression.check(video, basename="video_options", extension=".html")
 
 

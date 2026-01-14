@@ -56,7 +56,6 @@ test = [
     "defusedxml",
 ]
 doc = [
-    "sphinx < 8",
     "pydata-sphinx-theme",
     "sphinx-design",
 ]
